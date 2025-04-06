@@ -1,2 +1,1 @@
-# Chaty
-A basic chat application.
+# Event ETA Tracker (Client Side)

@@ -1,3 +1,2 @@
-const HOST = "http://localhost:3000";
-
+const HOST = import.meta.env.VITE_HOST;
 export default HOST;
