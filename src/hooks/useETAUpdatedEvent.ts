@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import useAppContext from "../contexts/AppContext";
 import useEventContext from "../contexts/EventContext";
-import { toast } from "sonner";
 
 interface ETAUpdatedEvent {
   guestId: string;

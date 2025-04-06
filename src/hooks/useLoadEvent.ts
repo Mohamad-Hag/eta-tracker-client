@@ -4,7 +4,7 @@ import useEventContext from "../contexts/EventContext";
 import getEventJoiners, { getEventById } from "../services/events";
 
 const useLoadEvent = (id?: string) => {
-  const { event, setEvent, setEventJoiners } = useEventContext();
+  const { setEvent, setEventJoiners } = useEventContext();
   const [eventLoading, setEventLoading] = useState<boolean>(true);
   const [joinersLoading, setJoinersLoading] = useState<boolean>(true);
 

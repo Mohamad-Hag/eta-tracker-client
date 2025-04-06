@@ -33,7 +33,6 @@ export const AppProvider = (props: { children: React.ReactNode }) => {
 
   const [isLocationPermissionGranted, setIsLocationPermissionGranted] =
     useState<boolean>(false);
-  const [isMoving, setIsMoving] = useState<boolean>(false);
   const watchIdRef = useRef<number | null>(null);
   const hasPromptedRef = useRef<boolean>(false);
 
@@ -49,7 +48,6 @@ export const AppProvider = (props: { children: React.ReactNode }) => {
     if (watchIdRef.current !== null) {
       navigator.geolocation.clearWatch(watchIdRef.current);
       watchIdRef.current = null;
-      setIsMoving(false);
     }
   };
 
@@ -64,8 +62,6 @@ export const AppProvider = (props: { children: React.ReactNode }) => {
         (error) => console.error("Geolocation error:", error),
         { enableHighAccuracy: true }
       );
-
-      setIsMoving(true);
     }
   };
 
