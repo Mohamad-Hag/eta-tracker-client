@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+}
+
+.button {
+  background: blue;
+  padding: 0.5rem;
+  border: 1px solid blue;
+  border-radius: 0.5rem;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+.button:hover {
+  background: darkblue;
+}
+
+.button:active {
+  background: blue;
+}
+.button-outline {
+  background: transparent;
+  border: 1px solid blue;
+  color: blue;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+.button-outline:hover {
+  background: blue;
+  color: white;
+}
+.button-outline:active {
+  background: darkblue;
+  color: white;
+}
