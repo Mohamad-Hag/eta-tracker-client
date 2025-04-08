@@ -37,19 +37,19 @@ function JoinEvent() {
 
   if (loading) return <Text>Loading event data...</Text>;
   if (!eventData) return <Text>Event not found</Text>;
-  if (isInEvent) return <Text>You are already in an event</Text>;
 
   return (
     <div className="flex flex-col items-center justify-center gap-4 py-10">
       <h1 className="text-xl font-medium">{eventData.name}</h1>
       <p>{`Event Date: ${new Date(eventData.event_date).toLocaleString()}`}</p>
       <p>{`Location: ${eventData.location}`}</p>
+      {isInEvent && <p className="animate-pulse">You already in this event!</p>}
 
       <div className="flex flex-col gap-6">
         <div className="flex gap-2 mt-4 items-center">
           <Link to={`/event/${eventId}`}>
             <button className="button" disabled={!guest || !socket}>
-              Join Event
+              {isInEvent ? "Continue!" : "Join Event"}
             </button>
           </Link>
           <button
