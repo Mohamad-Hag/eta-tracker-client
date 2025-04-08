@@ -38,11 +38,6 @@ export default function Event() {
       <h1 className="text-xl font-medium flex flex-col items-center">
         <span className="font-light">Hi {guest.name}, you're in</span>{" "}
         {event.name}{" "}
-        {isWatching && (
-          <span className="text-sm font-light">
-            Refreshing Current Location...
-          </span>
-        )}
       </h1>
       <div className="flex items-center gap-2">
         <button
@@ -83,6 +78,11 @@ export default function Event() {
         </tbody>
       </table>
       <ShareJoinLink id={event.id} />
+      {isWatching && (
+        <span className="text-sm font-light">
+          Refreshing Current Location...
+        </span>
+      )}
     </div>
   );
 }

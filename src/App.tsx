@@ -70,7 +70,7 @@ function App() {
   return (
     <div className="flex flex-col items-center justify-center gap-4 py-10">
       <h1 className="text-xl font-medium">Welcome {guest?.name}!</h1>
-      <div className="flex items-center justify-center gap-2">
+      <div className="flex flex-col md:flex-row items-center justify-center gap-2">
         <div className="flex flex-col gap-2 bg-gray-100 border p-4 rounded-md">
           <input
             value={name}
@@ -92,7 +92,7 @@ function App() {
             placeholder="Event Location..."
           />
         </div>
-        <div className="self-end flex items-center gap-2">
+        <div className="md:self-end flex flex-col md:flex-row items-center gap-2">
           <button
             className="button"
             onClick={create}
