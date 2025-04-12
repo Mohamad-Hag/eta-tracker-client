@@ -24,7 +24,7 @@ export default function Event() {
   } = useEventContext();
   const { guest } = useAppContext();
   const { loading: eventLoading } = useLoadEvent(eventId);
-  const leaveEvent = useLeaveEvent();
+  const {leave: leaveEvent, leaving } = useLeaveEvent();
 
   const isLast = eventJoiners.length === 1;
   const leaveConfirmMessage = `Are you sure you want to leave the event? ${
@@ -45,6 +45,7 @@ export default function Event() {
   useETAUpdatedEvent();
   useUserLeftEvent();
 
+  if (leaving) return <Text>Leaving...</Text>;
   if (eventLoading) return <Text>Loading...</Text>;
   return (
     <div className="flex flex-col gap-4 items-center justify-center py-10">

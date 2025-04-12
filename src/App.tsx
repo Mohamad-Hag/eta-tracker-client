@@ -6,13 +6,13 @@ import "./App.css";
 import HereLocationPicker from "./components/HereLocationPicker";
 import HOST from "./consts/host";
 import useAppContext from "./contexts/AppContext";
-  
 
 function App() {
   const { socket, guest, isInEvent } = useAppContext();
   const [eventId, setEventId] = useState<string>("");
   const [name, setName] = useState<string>("");
   const [location, setLocation] = useState<string | null>(null);
+  const [creating, setCreating] = useState<boolean>(false);
   const navigate = useNavigate();
   const [eventDate, setEventDate] = useState<string>("");
   const create = async () => {
@@ -40,6 +40,7 @@ function App() {
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         try {
+          setCreating(true);
           const response = await axios.post(`${HOST}/api/events/create`, {
             name,
             event_date: eventDate,
@@ -54,14 +55,17 @@ function App() {
             toast.success("Event created successfully");
             navigate(`/join/${response.data.id}`);
           } else toast.error("Failed to create event");
+          setCreating(false);
         } catch (error) {
           console.error("Error creating event:", error);
           toast.error("Failed to create event");
+          setCreating(false);
         }
       },
       (error) => {
         console.error("Error getting location:", error);
         toast.error("Error getting location");
+        setCreating(false);
       },
       { enableHighAccuracy: true }
     );
@@ -96,9 +100,13 @@ function App() {
           <button
             className="button"
             onClick={create}
-            disabled={!guest || !socket || !eventDate || !name}
+            style={{
+              opacity:
+                !guest || !socket || !eventDate || !name || creating ? 0.5 : 1,
+            }}
+            disabled={!guest || !socket || !eventDate || !name || creating}
           >
-            Create Event
+            {creating ? "Creating..." : "Create Event"}
           </button>
           OR Join
           <form
