@@ -26,6 +26,18 @@ export default function Event() {
   const { loading: eventLoading } = useLoadEvent(eventId);
   const leaveEvent = useLeaveEvent();
 
+  const isLast = eventJoiners.length === 1;
+  const leaveConfirmMessage = `Are you sure you want to leave the event? ${
+    isLast
+      ? "This will automatically delete the event because you are the last one"
+      : ""
+  }`;
+
+  const leave = () => {
+    const confirmed = window.confirm(leaveConfirmMessage);
+    if (confirmed) leaveEvent();
+  };
+
   useJoinEvent(eventId);
 
   // Event Listners
@@ -47,7 +59,7 @@ export default function Event() {
         >
           {isWatchStarted ? "Stop" : "Start"}
         </button>
-        <button className="button button-outline" onClick={leaveEvent}>
+        <button className="button button-outline" onClick={leave}>
           Leave Event
         </button>
       </div>

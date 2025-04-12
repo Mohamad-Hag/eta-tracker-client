@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 const useLeaveEvent = () => {
   const { event } = useEventContext();
-  const { guest } = useAppContext();
+  const { guest, setIsInEvent } = useAppContext();
   const navigate = useNavigate();
 
   const leave = async () => {
@@ -14,6 +14,7 @@ const useLeaveEvent = () => {
     try {
       await leaveEvent(event.id, guest.id);
       console.log("Successfully left the event! ✅");
+      setIsInEvent(false);
       navigate("/");
     } catch (error) {
       console.error("Error leaving event:", error);
