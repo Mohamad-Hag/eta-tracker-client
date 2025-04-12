@@ -18,13 +18,13 @@ const useETAUpdatedEvent = () => {
 
     const handleETAUpdated = (data: ETAUpdatedEvent) => {
       console.log(
-        `ETA updated for guest ${data.guestId} to ${data.eta} minutes`
+        `ETA updated for guest ${data.guestId} to ${data.eta} minutes. His current location is ${data.location}`
       );
 
       setEventJoiners((prev) =>
         prev.map((joiner) =>
           joiner.guest.id === data.guestId
-            ? { ...joiner, eta: data.eta, status: data.status }
+            ? { ...joiner, eta: data.eta, status: data.status, location: data.location }
             : joiner
         )
       );

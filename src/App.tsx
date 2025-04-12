@@ -6,6 +6,7 @@ import "./App.css";
 import HereLocationPicker from "./components/HereLocationPicker";
 import HOST from "./consts/host";
 import useAppContext from "./contexts/AppContext";
+  
 
 function App() {
   const { socket, guest, isInEvent } = useAppContext();
@@ -13,7 +14,6 @@ function App() {
   const [name, setName] = useState<string>("");
   const [location, setLocation] = useState<string | null>(null);
   const navigate = useNavigate();
-
   const [eventDate, setEventDate] = useState<string>("");
   const create = async () => {
     if (isInEvent) {

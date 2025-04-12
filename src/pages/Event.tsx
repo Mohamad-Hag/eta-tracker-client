@@ -10,6 +10,7 @@ import useUserJoinedEvent from "../hooks/useUserJoinedEvent";
 import useUserLeftEvent from "../hooks/useUserLeftEvent";
 import { secondsToDurationString } from "../utils/secondsToDuration";
 import ShareJoinLink from "../components/ShareJoinLink";
+import EventLiveMap from "../components/EventLiveMap";
 
 export default function Event() {
   const { eventId } = useParams<{ eventId: string }>();
@@ -79,10 +80,11 @@ export default function Event() {
       </table>
       <ShareJoinLink id={event.id} />
       {isWatching && (
-        <span className="text-sm font-light">
+        <span className="text-sm font-light absolute top-2">
           Refreshing Current Location...
         </span>
       )}
+      <EventLiveMap />
     </div>
   );
 }
