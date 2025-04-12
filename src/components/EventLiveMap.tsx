@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import L from "leaflet";
 import { parseLocationString } from "../utils/parseLocationString";
 import "leaflet/dist/leaflet.css";
@@ -19,9 +19,6 @@ export default function EventLiveMap() {
   const mapRef = useRef<HTMLDivElement>(null);
   const leafletMapRef = useRef<L.Map | null>(null);
   const markersRef = useRef<Map<string, L.Marker>>(new Map());
-  const [mapBounds, setMapBounds] = useState<L.LatLngBounds>(
-    new L.LatLngBounds()
-  );
 
   useEffect(() => {
     if (!mapRef.current || leafletMapRef.current || !isWatchStarted) return;
@@ -39,14 +36,17 @@ export default function EventLiveMap() {
     if (!map || !isWatchStarted) return;
 
     const markers = markersRef.current;
-    const bounds = new L.LatLngBounds();
+    const bounds = new L.LatLngBounds([]);
 
     eventJoiners.forEach((joiner) => {
       if (!joiner.location) return; // Skip if location is undefined or null
 
       const { latitude, longitude } = parseLocationString(joiner.location);
-      const existing = markers.get(joiner.id);
 
+      // Ensure that latitude and longitude are valid numbers before extending the bounds
+      if (isNaN(latitude) || isNaN(longitude)) return;
+
+      const existing = markers.get(joiner.id);
       const color = getRandomColor(); // Generate random color for each joiner
 
       if (existing) {
@@ -67,7 +67,7 @@ export default function EventLiveMap() {
         markers.set(joiner.id, marker);
       }
 
-      // Add marker to the bounds to calculate zoom level
+      // Add marker to the bounds to calculate zoom level (only if valid)
       bounds.extend([latitude, longitude]);
     });
 
@@ -80,7 +80,11 @@ export default function EventLiveMap() {
       }
     });
 
-    // Adjust zoom and center based on the bounds of the markers
+    // Adjust zoom and center based on the bounds of the markers, only if bounds are valid
+    if (!bounds.isValid()) {
+      console.warn("Invalid bounds, skipping fitBounds");
+      return;
+    }
     map.fitBounds(bounds, { padding: [50, 50] });
   }, [eventJoiners, isWatchStarted]);
 
