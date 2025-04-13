@@ -13,7 +13,6 @@ import EventLiveMap from "../components/EventLiveMap";
 import LocationPermissionProxy from "../components/LocationPermissionProxy";
 import ShareJoinLink from "../components/ShareJoinLink";
 import Text from "../components/Text";
-import useAppContext from "../contexts/AppContext";
 import useEventContext from "../contexts/EventContext";
 import useETAUpdatedEvent from "../hooks/useETAUpdatedEvent";
 import useJoinEvent from "../hooks/useJoinEvent";
@@ -32,7 +31,6 @@ export default function Event() {
     stopWatch,
     isWatching,
   } = useEventContext();
-  const { guest } = useAppContext();
   const { loading: eventLoading } = useLoadEvent(eventId);
   const { leave: leaveEvent, leaving } = useLeaveEvent();
 
