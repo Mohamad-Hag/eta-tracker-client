@@ -1,3 +1,4 @@
+import { IconCircleFilled } from "@tabler/icons-react";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
@@ -58,6 +59,16 @@ const HereLocationPicker = ({
     searchPlaces(debouncedQuery);
   }, [debouncedQuery]);
 
+  const splitCategories = (categories: any) => {
+    return (
+      categories
+        ?.reduce((acc: string, category: any) => {
+          return acc + category.name + ", ";
+        }, "")
+        .slice(0, -2) || "General"
+    );
+  };
+
   return (
     <div className="relative w-60">
       <div className="w-60 relative">
@@ -79,7 +90,7 @@ const HereLocationPicker = ({
       </div>
       {suggestions.length > 0 && query.length > 0 && (
         <ul
-          className="absolute top-12 z-10 bg-white border py-4 rounded-lg shadow-lg w-60"
+          className="absolute top-12 z-10 bg-white border py-4 rounded-lg shadow-lg w-60 max-h-[50vh] overflow-auto"
           style={{
             opacity: isLoading ? 0.5 : 1,
             pointerEvents: isLoading ? "none" : "auto",
@@ -90,9 +101,26 @@ const HereLocationPicker = ({
               key={place.id}
               title={place.title}
               onClick={() => handleSelect(place)}
-              className="truncate text-sm py-2 px-4 cursor-pointer hover:bg-gray-100 active:bg-gray-200"
+              className="truncate text-sm py-2 flex flex-col px-4 cursor-pointer hover:bg-gray-100 active:bg-gray-200"
             >
-              {place.title || place.address?.label}
+              <span className="truncate">
+                {place.title || place.address?.label}
+              </span>
+              <div className="flex items-center gap-2">
+                <span
+                  className="text-xs text-gray-500 truncate flex-1"
+                  title={splitCategories(place.categories)}
+                >
+                  {splitCategories(place.categories)}
+                </span>
+                <span className="text-xs text-gray-500 font-medium flex items-center gap-1">
+                  <IconCircleFilled
+                    size={8}
+                    color={place.openingHours?.isOpen ? "green" : "red"}
+                  />
+                  {place.openingHours?.isOpen ? "Open" : "Closed"}
+                </span>
+              </div>
             </li>
           ))}
         </ul>
