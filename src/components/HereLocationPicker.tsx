@@ -114,11 +114,19 @@ const HereLocationPicker = ({
                   {splitCategories(place.categories)}
                 </span>
                 <span className="text-xs text-gray-500 font-medium flex items-center gap-1">
-                  <IconCircleFilled
-                    size={8}
-                    color={place.openingHours?.isOpen ? "green" : "red"}
-                  />
-                  {place.openingHours?.isOpen ? "Open" : "Closed"}
+                  {place.openingHours ? (
+                    <>
+                      <IconCircleFilled
+                        size={8}
+                        color={
+                          place.openingHours?.[0]?.isOpen ? "green" : "red"
+                        }
+                      />
+                      {place.openingHours?.[0]?.isOpen ? "Open" : "Closed"}
+                    </>
+                  ) : (
+                    "Unknown"
+                  )}
                 </span>
               </div>
             </li>

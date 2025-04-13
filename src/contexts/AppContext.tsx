@@ -38,7 +38,7 @@ export const AppProvider = (props: { children: React.ReactNode }) => {
   const [userLocation, setUserLocation] = useState<AppLocation | null>(null);
 
   const [isLocationPermissionGranted, setIsLocationPermissionGranted] =
-    useState<boolean>(false);
+    useState<boolean>(true);
   const watchIdRef = useRef<number | null>(null);
   const hasPromptedRef = useRef<boolean>(false);
 
