@@ -122,7 +122,7 @@ export const AppProvider = (props: { children: React.ReactNode }) => {
               setIsLocationPermissionGranted(true);
               setUserLocation({
                 latitude: position.coords.latitude,
-                longitude: position.coords.longitude,q
+                longitude: position.coords.longitude,
               });
             },
             () => {
