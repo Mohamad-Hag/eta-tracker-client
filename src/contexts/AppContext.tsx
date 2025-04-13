@@ -6,6 +6,8 @@ import HOST from "../consts/host";
 import useCheckLocationPermission from "../hooks/useCheckLocationPermission";
 import useIsAlreadyInEvent from "../hooks/useIsAlreadyInEvent";
 import { AppLocation } from "../utils/parseLocationString";
+import { createAvatar } from "@dicebear/core";
+import { lorelei } from "@dicebear/collection";
 
 type Guest = any;
 
@@ -74,8 +76,14 @@ export const AppProvider = (props: { children: React.ReactNode }) => {
   const createGuest = async (name: string) => {
     const guestId = uuidv4();
     try {
+      const seed = Math.random().toString(36).substring(2, 12);
+      const avatar = createAvatar(lorelei, {
+        size: 128,
+        seed,
+      }).toDataUri();
       const response = await axios.post(`${HOST}/api/guests/create`, {
         name,
+        avatar,
         guest_id: guestId,
       });
       if (response.status === 201) {

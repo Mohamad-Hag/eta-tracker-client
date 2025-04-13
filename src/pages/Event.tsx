@@ -1,15 +1,17 @@
 import {
-  IconCheck,
-  IconClock,
-  IconClockCheck,
-  IconClockPin,
-  IconClockX,
+  IconCalendarEvent,
   IconDoorExit,
+  IconDots,
+  IconPin,
   IconPlayerPlay,
   IconPlayerStop,
 } from "@tabler/icons-react";
-import clsx from "clsx";
 import { useParams } from "react-router-dom";
+import { toast } from "sonner";
+import EventJoiner from "../components/EventJoiner";
+import EventLiveMap from "../components/EventLiveMap";
+import LocationPermissionProxy from "../components/LocationPermissionProxy";
+import ShareJoinLink from "../components/ShareJoinLink";
 import Text from "../components/Text";
 import useAppContext from "../contexts/AppContext";
 import useEventContext from "../contexts/EventContext";
@@ -19,10 +21,6 @@ import useLeaveEvent from "../hooks/useLeaveEvent";
 import useLoadEvent from "../hooks/useLoadEvent";
 import useUserJoinedEvent from "../hooks/useUserJoinedEvent";
 import useUserLeftEvent from "../hooks/useUserLeftEvent";
-import { secondsToDurationString } from "../utils/secondsToDuration";
-import ShareJoinLink from "../components/ShareJoinLink";
-import EventLiveMap from "../components/EventLiveMap";
-import LocationPermissionProxy from "../components/LocationPermissionProxy";
 
 export default function Event() {
   const { eventId } = useParams<{ eventId: string }>();
@@ -57,104 +55,70 @@ export default function Event() {
   useETAUpdatedEvent();
   useUserLeftEvent();
 
+  const openEventDetails = () => {
+    toast.info(
+      <div className="flex flex-col">
+        <p>Event Name: {event.name}</p>
+        <p>Event Date: {new Date(event.event_date).toLocaleString()}</p>
+        <p>Location: {event.location}</p>
+      </div>
+    );
+  };
+
   if (leaving) return <Text>Leaving...</Text>;
   if (eventLoading) return <Text>Loading...</Text>;
   return (
     <LocationPermissionProxy>
-      <div className="flex flex-col gap-4 items-center justify-center py-10">
-        <h1 className="text-xl font-medium flex flex-col items-center">
-          <span className="font-light">Hi {guest.name}, you're in</span>{" "}
-          {event.name}{" "}
-        </h1>
-        <div className="flex items-center gap-2">
-          <button
-            className="button"
-            onClick={isWatchStarted ? stopWatch : startWatch}
-          >
-            {isWatchStarted ? "Stop" : "Start"}
-            {isWatchStarted ? <IconPlayerStop /> : <IconPlayerPlay />}
-          </button>
-          <button className="button button-outline" onClick={leave}>
-            Leave <IconDoorExit />
-          </button>
-        </div>
-        <table className="table-auto border-collapse">
-          <thead>
-            <tr className="bg-blue-200">
-              <th className="px-4 py-2 border border-blue-500">Joiner Name</th>
-              <th className="px-4 py-2 border border-blue-500">ETA</th>
-              <th className="px-4 py-2 border border-blue-500">Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {eventJoiners.map((joiner) => (
-              <tr
-                key={joiner.guest.id}
-                className="odd:bg-blue-50 even:bg-blue-100"
+      <>
+        <EventLiveMap className="max-h-[45vh] shadow-xl !shadow-[#00000005] rounded-b-2xl relative z-10" />
+        <div className="flex justify-center">
+          <div className="flex flex-col gap-4 items-start justify-center py-10 md:px-2 w-full md:max-w-md">
+            <div className="flex items-center justify-between w-full px-4 py-4 md:rounded-lg">
+              <h1 className="text-xl font-medium flex w-full items-center gap-2 decoration-wavy underline decoration-blue-500 underline-offset-2">
+                <IconCalendarEvent /> {event.name}
+              </h1>
+              <button
+                className="max-h-10 max-w-10 min-w-10 min-h-10 rounded-full hover:bg-blue-50 text-gray-500 hover:text-blue-500 flex items-center justify-center"
+                onClick={openEventDetails}
               >
-                <td className="px-4 py-2 border border-blue-500">
-                  {joiner.guest.name}
-                </td>
-                <td className="px-4 py-2 border border-blue-500">
-                  {joiner.eta ? secondsToDurationString(joiner.eta) : "-"}
-                </td>
-                <td
-                  className={clsx(
-                    "px-4 flex flex-col items-center gap-1 py-2 border border-blue-500 font-medium",
-                    {
-                      "text-red-500": joiner.late?.isLate,
-                      "text-green-500": joiner.status === "On Time",
-                      "text-yellow-500":
-                        joiner.status === "Late" ||
-                        joiner.status === "Very Late",
-                      "text-gray-500": joiner.status === "Arrived",
-                      "text-blue-500": joiner.status === "Not Started",
-                      "text-purple-500":
-                        joiner.status === "Early" ||
-                        joiner.status === "Very Early",
-                    }
-                  )}
-                >
-                  <span className="flex items-center gap-1">
-                    {joiner.status}
-                    {joiner.late?.isLate ? (
-                      <IconClockX size={18} />
-                    ) : (
-                      iconStatusMap[joiner.status as keyof typeof iconStatusMap]
-                    )}
-                    {joiner.early?.isEarly ? <IconClockPin size={18} /> : null}
-                  </span>
-                  {joiner.late?.amount && joiner.late.isLate ? (
-                    <span className="text-sm flex items-center gap-1">
-                      {`(By ${secondsToDurationString(joiner.late.amount)})`}
-                    </span>
-                  ) : null}
-                  {joiner.early?.amount && joiner.early.isEarly ? (
-                    <span className="text-sm flex items-center gap-1">
-                      {`(By ${secondsToDurationString(joiner.early.amount)})`}
-                    </span>
-                  ) : null}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        <ShareJoinLink id={event.id} />
-        {isWatching && (
-          <span className="text-sm font-light absolute top-2">
-            Refreshing Current Location...
-          </span>
-        )}
-        <EventLiveMap />
-      </div>
+                <IconDots />
+              </button>
+            </div>
+            <div className="flex items-center gap-2 border-b md:border-b-0 pb-6 w-full px-4">
+              <button
+                className="button flex-1"
+                onClick={isWatchStarted ? stopWatch : startWatch}
+              >
+                {isWatchStarted ? "Stop" : "Start"}
+                {isWatchStarted ? <IconPlayerStop /> : <IconPlayerPlay />}
+              </button>
+              <button className="button button-outline flex-1" onClick={leave}>
+                Leave <IconDoorExit />
+              </button>
+            </div>
+            <div className="flex flex-col w-full items-center">
+              {eventJoiners.map((joiner) => (
+                <EventJoiner key={joiner.guest.id} joiner={joiner} />
+              ))}
+            </div>
+            <ShareJoinLink id={event.id} />
+            <span
+              className={
+                "text-sm flex items-center gap-1 font-light fixed z-20 bg-white p-2 rounded-full shadow-xl pointer-events-none duration-300"
+              }
+              style={{
+                opacity: isWatching ? 0.95 : 0,
+                top: isWatching ? 10 : 0,
+                left: "50%",
+                transform: "translateX(-50%)",
+              }}
+            >
+              <IconPin size={14} />
+              Refreshing Current Location...
+            </span>
+          </div>
+        </div>
+      </>
     </LocationPermissionProxy>
   );
 }
-
-const iconStatusMap = {
-  "On Time": <IconClockCheck size={18} />,
-  Late: <IconClock size={18} />,
-  "Very Late": <IconClockX size={18} />,
-  Arrived: <IconCheck size={18} />,
-  "Not Started": <IconPlayerPlay size={18} />,
-};

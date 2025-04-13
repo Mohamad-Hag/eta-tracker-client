@@ -1,13 +1,18 @@
+import {
+  IconCalendar,
+  IconDoorEnter,
+  IconHome,
+  IconMap,
+} from "@tabler/icons-react";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
+import LocationPermissionProxy from "../components/LocationPermissionProxy";
 import ShareJoinLink from "../components/ShareJoinLink";
 import Text from "../components/Text";
 import HOST from "../consts/host";
 import useAppContext from "../contexts/AppContext";
-import { IconArrowLeft, IconDoorEnter } from "@tabler/icons-react";
-import LocationPermissionProxy from "../components/LocationPermissionProxy";
 
 function JoinEvent() {
   const { socket, guest, isInEvent } = useAppContext();
@@ -44,28 +49,34 @@ function JoinEvent() {
     <LocationPermissionProxy>
       <div className="flex flex-col items-center justify-center gap-4 py-10">
         <h1 className="text-xl font-medium">{eventData.name}</h1>
-        <p>{`Event Date: ${new Date(
-          eventData.event_date
-        ).toLocaleString()}`}</p>
-        <p>{`Location: ${eventData.location}`}</p>
+        <p className="flex items-center gap-1">
+          <IconCalendar size={18} />
+          {`Event Date: ${new Date(eventData.event_date).toLocaleString()}`}
+        </p>
+        <p className="flex items-center gap-1">
+          <IconMap size={18} />
+          {`Location: ${eventData.location}`}
+        </p>
         {isInEvent && (
           <p className="animate-pulse">You already in this event!</p>
         )}
 
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-6 w-full md:w-auto px-4">
           <div className="flex gap-2 mt-4 items-center">
-            <Link to={`/event/${eventId}`}>
-              <button className="button" disabled={!guest || !socket}>
+            <Link to={`/event/${eventId}`} className="flex-1">
+              <button className="button w-full" disabled={!guest || !socket}>
                 {isInEvent ? "Continue!" : "Join Event"} <IconDoorEnter />
               </button>
             </Link>
             <button
-              className="button button-outline"
+              className="button button-outline flex-1 text-nowrap"
               onClick={() => navigate("/")}
             >
-              Back to Home <IconArrowLeft />
+              Back to Home <IconHome />
             </button>
           </div>
+        </div>
+        <div className="flex items-center gap-2 w-full md:w-auto">
           <ShareJoinLink id={eventId!} />
         </div>
       </div>

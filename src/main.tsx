@@ -9,12 +9,14 @@ import Event from "./pages/Event.tsx";
 import JoinEvent from "./pages/JoinEvent.tsx";
 import { EventProvider } from "./contexts/EventContext.tsx";
 import { AppProvider } from "./contexts/AppContext.tsx";
+import Header from "./components/Header.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <AppProvider>
       <Toaster richColors closeButton />
       <BrowserRouter>
+        <Header />
         <Routes>
           <Route path="/" element={<App />} />
           <Route path="/join/:eventId" element={<JoinEvent />} />

@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { useEffect, useRef } from "react";
 import L from "leaflet";
 import { parseLocationString } from "../utils/parseLocationString";
@@ -23,7 +24,7 @@ const getTextColor = (bgColor: string): string => {
   return luminance > 186 ? "#000000" : "#FFFFFF";
 };
 
-export default function EventLiveMap() {
+export default function EventLiveMap({ className }: { className?: string }) {
   const { eventJoiners, event } = useEventContext();
   const mapRef = useRef<HTMLDivElement>(null);
   const leafletMapRef = useRef<L.Map | null>(null);
@@ -142,5 +143,11 @@ export default function EventLiveMap() {
     }
   }, [eventJoiners, event?.location]);
 
-  return <div ref={mapRef} style={{ height: "500px", width: "100%" }} />;
+  return (
+    <div
+      ref={mapRef}
+      className={clsx("", className)}
+      style={{ height: "500px", width: "100%" }}
+    />
+  );
 }

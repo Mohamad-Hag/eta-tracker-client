@@ -51,6 +51,7 @@ function App() {
               `${position.coords.latitude},${position.coords.longitude}`,
             guest_id: guest?.id,
             guest_name: guest?.name,
+            guest_avatar: guest?.avatar,
           });
           if (response.status === 201) {
             setEventId(response.data.id);
@@ -75,10 +76,10 @@ function App() {
 
   return (
     <LocationPermissionProxy>
-      <div className="flex flex-col items-center justify-center gap-4 py-10">
+      <div className="flex flex-col items-center justify-center gap-4 py-10 w-full">
         <h1 className="text-xl font-medium">Welcome {guest?.name}!</h1>
-        <div className="flex flex-col md:flex-row items-center justify-center gap-2">
-          <div className="flex flex-col gap-2 bg-gray-100 border p-4 rounded-md">
+        <div className="flex flex-col md:flex-row items-center justify-center gap-2 w-full md:w-auto">
+          <div className="flex flex-col gap-2 md:bg-gray-100 md:border p-4 md:rounded-md w-full">
             <input
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -100,9 +101,9 @@ function App() {
               currentLocation={userLocation}
             />
           </div>
-          <div className="md:self-end flex flex-col md:flex-row items-center gap-2">
+          <div className="md:self-end flex flex-col md:flex-row items-center gap-2 text-nowrap w-full md:w-auto px-4 md:px-0">
             <button
-              className="button"
+              className="button text-nowrap w-full"
               onClick={create}
               style={{
                 opacity:
@@ -116,7 +117,7 @@ function App() {
             </button>
             OR Join
             <form
-              className="flex items-center gap-1"
+              className="flex items-center gap-1 w-full md:w-auto"
               onSubmit={(e) => e.preventDefault()}
             >
               <input
@@ -124,7 +125,7 @@ function App() {
                 onChange={(e) => setEventId(e.target.value)}
                 type="text"
                 placeholder="Event ID"
-                className="border border-gray-300 rounded-md p-2"
+                className="border border-gray-300 rounded-md p-2 w-full md:w-auto"
               />
               {eventId !== "" && (
                 <Link to={`/join/${eventId}`}>

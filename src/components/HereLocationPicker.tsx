@@ -70,12 +70,12 @@ const HereLocationPicker = ({
   };
 
   return (
-    <div className="relative w-60">
-      <div className="w-60 relative">
+    <div className="relative w-full">
+      <div className="w-full relative">
         <input
           type="text"
           value={query}
-          className="border !w-60 !px-4 h-10 rounded-md"
+          className="border !w-full !px-4 h-10 rounded-md"
           placeholder={placeholder}
           onChange={(e) => {
             setQuery(e.target.value);
@@ -90,7 +90,7 @@ const HereLocationPicker = ({
       </div>
       {suggestions.length > 0 && query.length > 0 && (
         <ul
-          className="absolute top-12 z-10 bg-white border py-4 rounded-lg shadow-lg w-60 max-h-[50vh] overflow-auto"
+          className="absolute top-12 z-10 bg-white border py-4 rounded-lg shadow-lg w-full max-h-[50vh] overflow-auto"
           style={{
             opacity: isLoading ? 0.5 : 1,
             pointerEvents: isLoading ? "none" : "auto",
