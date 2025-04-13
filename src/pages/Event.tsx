@@ -94,7 +94,7 @@ export default function Event() {
                 Leave <IconDoorExit />
               </button>
             </div>
-            <div className="flex flex-col w-full items-center">
+            <div className="flex flex-col w-full items-center md:gap-2">
               {eventJoiners.map((joiner) => (
                 <EventJoiner key={joiner.guest.id} joiner={joiner} />
               ))}
@@ -102,7 +102,7 @@ export default function Event() {
             <ShareJoinLink id={event.id} />
             <span
               className={
-                "text-sm flex items-center gap-1 font-light fixed z-20 bg-white p-2 rounded-full shadow-xl pointer-events-none duration-300"
+                "text-sm text-nowrap flex items-center gap-1 font-light fixed z-20 bg-white p-2 rounded-full shadow-xl pointer-events-none duration-300"
               }
               style={{
                 opacity: isWatching ? 0.95 : 0,
