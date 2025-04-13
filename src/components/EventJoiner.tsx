@@ -10,6 +10,7 @@ import {
 import useAppContext from "../contexts/AppContext";
 import { secondsToDurationString } from "../utils/secondsToDuration";
 import Avatar from "./Avatar";
+import useEventContext from "../contexts/EventContext";
 
 interface EventJoinerProps {
   joiner: any;
@@ -17,7 +18,9 @@ interface EventJoinerProps {
 
 export default function EventJoiner({ joiner }: EventJoinerProps) {
   const { guest } = useAppContext();
+  const { waves } = useEventContext();
   const isYou = guest.id === joiner.guest?.id;
+  const isWaving = waves.some((w) => w.joinerId === joiner.guest?.id);
 
   return (
     <div className="flex items-center gap-4 p-4 bg-white md:rounded-2xl md:shadow-sm border-b md:border-t md:border-x md:hover:shadow-md transition-all w-full md:max-w-md">
@@ -54,10 +57,15 @@ export default function EventJoiner({ joiner }: EventJoinerProps) {
         </div>
       </div>
 
-      {/* ETA Badge */}
-      <div className="text-xs bg-gray-100 text-gray-800 px-3 py-1 rounded-full flex items-center gap-1">
-        <IconClock className="w-4 h-4" />
-        <span>{joiner.eta ? secondsToDurationString(joiner.eta) : "N/A"}</span>
+      <div className="flex items-center gap-1">
+        {isWaving && <span className="text-lg animate-pulse">👋</span>}
+        {/* ETA Badge */}
+        <div className="text-xs bg-gray-100 text-gray-800 px-3 py-1 rounded-full flex items-center gap-1">
+          <IconClock className="w-4 h-4" />
+          <span>
+            {joiner.eta ? secondsToDurationString(joiner.eta) : "N/A"}
+          </span>
+        </div>
       </div>
     </div>
   );

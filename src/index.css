@@ -16,7 +16,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: .3rem;
+  gap: 0.3rem;
 }
 .button:hover {
   background: darkblue;
@@ -43,4 +43,16 @@
 .button svg {
   width: 18px;
   height: 18px;
+}
+.flying-animated {
+  top: 50%;
+  opacity: 100%;
+  animation: flying 1.5s ease-in-out forwards;
+}
+
+@keyframes flying {
+  100% {
+    top: -20%;
+    opacity: 0;
+  }
 }

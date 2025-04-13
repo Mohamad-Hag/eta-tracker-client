@@ -84,14 +84,14 @@ function App() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               type="text"
-              className="border border-gray-300 rounded-md p-2"
+              className="border border-gray-300 rounded-md p-2 w-full"
               placeholder="Event Name"
             />
             <input
               value={eventDate}
               onChange={(e) => setEventDate(e.target.value)}
               type="datetime-local"
-              className="border border-gray-300 rounded-md p-2"
+              className="border border-gray-300 rounded-md p-2 w-full"
             />
             <HereLocationPicker
               onSelect={(location) => {

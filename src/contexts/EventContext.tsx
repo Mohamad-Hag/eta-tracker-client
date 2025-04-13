@@ -10,6 +10,12 @@ interface IEventContext {
   stopWatch: () => void;
   isWatchStarted: boolean;
   isWatching: boolean;
+  waves: { wave: React.ReactNode; id: string; joinerId: string }[];
+  setWaves: React.Dispatch<
+    React.SetStateAction<
+      { wave: React.ReactNode; id: string; joinerId: string }[]
+    >
+  >;
 }
 
 const EventContext = createContext<IEventContext>(null!);
@@ -19,6 +25,9 @@ export const EventProvider = ({ children }: { children: React.ReactNode }) => {
   const [eventJoiners, setEventJoiners] = useState<any[]>([]);
   const { isWatchStarted, isWatching, startWatch, stopWatch } =
     useStartWatch(event);
+  const [waves, setWaves] = useState<
+    { wave: React.ReactNode; id: string; joinerId: string }[]
+  >([]);
 
   return (
     <EventContext.Provider
@@ -31,6 +40,8 @@ export const EventProvider = ({ children }: { children: React.ReactNode }) => {
         stopWatch,
         isWatchStarted,
         isWatching,
+        waves,
+        setWaves,
       }}
     >
       {children}
