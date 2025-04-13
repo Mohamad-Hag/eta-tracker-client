@@ -1,8 +1,9 @@
-import React, { createContext, useEffect, useState, useRef } from "react";
 import axios from "axios";
-import { v4 as uuidv4 } from "uuid";
+import React, { createContext, useEffect, useRef, useState } from "react";
 import { io, Socket } from "socket.io-client";
+import { v4 as uuidv4 } from "uuid";
 import HOST from "../consts/host";
+import useCheckLocationPermission from "../hooks/useCheckLocationPermission";
 import useIsAlreadyInEvent from "../hooks/useIsAlreadyInEvent";
 import { AppLocation } from "../utils/parseLocationString";
 
@@ -19,6 +20,7 @@ interface AppContextType {
   stopWatchLocation: () => void;
   watchLocation: (onWatch: (...args: any) => void) => void;
   isLocationPermissionGranted: boolean;
+  setIsLocationPermissionGranted: React.Dispatch<React.SetStateAction<boolean>>;
   isInEvent: boolean;
   setIsInEvent: React.Dispatch<React.SetStateAction<boolean>>;
   userLocation: AppLocation | null;
@@ -112,32 +114,7 @@ export const AppProvider = (props: { children: React.ReactNode }) => {
     };
   }, [HOST]);
 
-  useEffect(() => {
-    const requestPermission = async () => {
-      if ("geolocation" in navigator) {
-        try {
-          navigator.geolocation.getCurrentPosition(
-            (position) => {
-              console.log("Got location");
-              setIsLocationPermissionGranted(true);
-              setUserLocation({
-                latitude: position.coords.latitude,
-                longitude: position.coords.longitude,
-              });
-            },
-            () => {
-              console.error("Location permission denied");
-              setIsLocationPermissionGranted(false);
-            }
-          );
-        } catch (error) {
-          console.error("Error getting location:", error);
-          setIsLocationPermissionGranted(false);
-        }
-      }
-    };
-    requestPermission();
-  }, []);
+  useCheckLocationPermission(setIsLocationPermissionGranted, setUserLocation);
 
   return (
     <AppContext.Provider
@@ -152,6 +129,7 @@ export const AppProvider = (props: { children: React.ReactNode }) => {
         stopWatchLocation,
         watchLocation,
         isLocationPermissionGranted,
+        setIsLocationPermissionGranted,
         isInEvent,
         setIsInEvent,
         userLocation,
