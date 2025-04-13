@@ -6,6 +6,8 @@ import ShareJoinLink from "../components/ShareJoinLink";
 import Text from "../components/Text";
 import HOST from "../consts/host";
 import useAppContext from "../contexts/AppContext";
+import { IconArrowLeft, IconDoorEnter } from "@tabler/icons-react";
+import LocationPermissionProxy from "../components/LocationPermissionProxy";
 
 function JoinEvent() {
   const { socket, guest, isInEvent } = useAppContext();
@@ -39,29 +41,35 @@ function JoinEvent() {
   if (!eventData) return <Text>Event not found</Text>;
 
   return (
-    <div className="flex flex-col items-center justify-center gap-4 py-10">
-      <h1 className="text-xl font-medium">{eventData.name}</h1>
-      <p>{`Event Date: ${new Date(eventData.event_date).toLocaleString()}`}</p>
-      <p>{`Location: ${eventData.location}`}</p>
-      {isInEvent && <p className="animate-pulse">You already in this event!</p>}
+    <LocationPermissionProxy>
+      <div className="flex flex-col items-center justify-center gap-4 py-10">
+        <h1 className="text-xl font-medium">{eventData.name}</h1>
+        <p>{`Event Date: ${new Date(
+          eventData.event_date
+        ).toLocaleString()}`}</p>
+        <p>{`Location: ${eventData.location}`}</p>
+        {isInEvent && (
+          <p className="animate-pulse">You already in this event!</p>
+        )}
 
-      <div className="flex flex-col gap-6">
-        <div className="flex gap-2 mt-4 items-center">
-          <Link to={`/event/${eventId}`}>
-            <button className="button" disabled={!guest || !socket}>
-              {isInEvent ? "Continue!" : "Join Event"}
+        <div className="flex flex-col gap-6">
+          <div className="flex gap-2 mt-4 items-center">
+            <Link to={`/event/${eventId}`}>
+              <button className="button" disabled={!guest || !socket}>
+                {isInEvent ? "Continue!" : "Join Event"} <IconDoorEnter />
+              </button>
+            </Link>
+            <button
+              className="button button-outline"
+              onClick={() => navigate("/")}
+            >
+              Back to Home <IconArrowLeft />
             </button>
-          </Link>
-          <button
-            className="button button-outline"
-            onClick={() => navigate("/")}
-          >
-            Back to Home
-          </button>
+          </div>
+          <ShareJoinLink id={eventId!} />
         </div>
-        <ShareJoinLink id={eventId!} />
       </div>
-    </div>
+    </LocationPermissionProxy>
   );
 }
 

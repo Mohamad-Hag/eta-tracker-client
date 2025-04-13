@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 import { io, Socket } from "socket.io-client";
 import HOST from "../consts/host";
 import useIsAlreadyInEvent from "../hooks/useIsAlreadyInEvent";
+import { AppLocation } from "../utils/parseLocationString";
 
 type Guest = any;
 
@@ -20,6 +21,8 @@ interface AppContextType {
   isLocationPermissionGranted: boolean;
   isInEvent: boolean;
   setIsInEvent: React.Dispatch<React.SetStateAction<boolean>>;
+  userLocation: AppLocation | null;
+  setUserLocation: React.Dispatch<React.SetStateAction<AppLocation | null>>;
 }
 
 export const AppContext = createContext<AppContextType | null>(null);
@@ -30,6 +33,7 @@ export const AppProvider = (props: { children: React.ReactNode }) => {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [isInEvent, setIsInEvent] = useState<boolean>(false);
   const isGuestInEvent = useIsAlreadyInEvent(guest);
+  const [userLocation, setUserLocation] = useState<AppLocation | null>(null);
 
   const [isLocationPermissionGranted, setIsLocationPermissionGranted] =
     useState<boolean>(false);
@@ -112,10 +116,14 @@ export const AppProvider = (props: { children: React.ReactNode }) => {
     const requestPermission = async () => {
       if ("geolocation" in navigator) {
         try {
-          await navigator.geolocation.getCurrentPosition(
-            () => {
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
               console.log("Got location");
               setIsLocationPermissionGranted(true);
+              setUserLocation({
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude,q
+              });
             },
             () => {
               console.error("Location permission denied");
@@ -146,6 +154,8 @@ export const AppProvider = (props: { children: React.ReactNode }) => {
         isLocationPermissionGranted,
         isInEvent,
         setIsInEvent,
+        userLocation,
+        setUserLocation,
       }}
     >
       {props.children}

@@ -7,6 +7,8 @@ interface ETAUpdatedEvent {
   location: string;
   eta: number;
   status: string;
+  late: { isLate: boolean; amount: number }; // Amount in Minutes
+  early: { isEarly: boolean; amount: number }; // Amount in Minutes
 }
 
 const useETAUpdatedEvent = () => {
@@ -24,7 +26,14 @@ const useETAUpdatedEvent = () => {
       setEventJoiners((prev) =>
         prev.map((joiner) =>
           joiner.guest.id === data.guestId
-            ? { ...joiner, eta: data.eta, status: data.status, location: data.location }
+            ? {
+                ...joiner,
+                eta: data.eta,
+                status: data.status,
+                location: data.location,
+                late: data.late,
+                early: data.early,
+              }
             : joiner
         )
       );

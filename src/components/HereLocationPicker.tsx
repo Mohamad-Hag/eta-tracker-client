@@ -1,28 +1,41 @@
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
-import axios from "axios";
+import { AppLocation } from "../utils/parseLocationString";
 
-const HERE_API_KEY = "w44HZpzdET7cNp_06KGItYDi8E3SEE4y7S_PvtBM4rI"; // Replace with your API key
+const DEFAULT_LOCATION = { latitude: 24.4539, longitude: 54.3773 }; // Abu Dhabi fallback
 
 const HereLocationPicker = ({
   onSelect,
   placeholder = "Search for a location...",
+  currentLocation,
+  limit = 10,
+  countryCode = "ARE",
 }: {
   onSelect: (location: any) => void;
   placeholder?: string;
+  currentLocation?: AppLocation | null;
+  limit?: number;
+  countryCode?: string;
 }) => {
+  const HERE_API_KEY = import.meta.env.VITE_HERE_API_KEY; // Replace with your API key
   const [query, setQuery] = useState("");
-  const [debouncedQuery] = useDebounce(query, 300);
+  const [debouncedQuery] = useDebounce(query, 500);
   const [suggestions, setSuggestions] = useState([]);
   const [isSelectQuery, setIsSelectQuery] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  const lat = currentLocation?.latitude ?? DEFAULT_LOCATION.latitude;
+  const lng = currentLocation?.longitude ?? DEFAULT_LOCATION.longitude;
+  const locationParam = `&at=${lat},${lng}`;
+  const countryCodeParam = countryCode ? `&in=countryCode:${countryCode}` : "";
+
   const searchPlaces = async (input: string) => {
-    if (input.length < 3) return; // Prevent unnecessary API calls
+    if (input.length < 3) return;
     setIsLoading(true);
     try {
       const res = await axios.get(
-        `https://autocomplete.search.hereapi.com/v1/autocomplete?q=${input}&apiKey=${HERE_API_KEY}`
+        `https://discover.search.hereapi.com/v1/discover?q=${input}&lang=en${locationParam}${countryCodeParam}&limit=${limit}&apiKey=${HERE_API_KEY}`
       );
       setSuggestions(res.data.items);
     } catch (error) {
@@ -32,27 +45,11 @@ const HereLocationPicker = ({
     }
   };
 
-  const getLocationById = async (id: string) => {
-    setIsLoading(true);
-    try {
-      const res = await axios.get(
-        `https://lookup.search.hereapi.com/v1/lookup?id=${id}&apiKey=${HERE_API_KEY}`
-      );
-      const location = res.data?.position;
-      return location;
-    } catch (error) {
-      console.error("Error fetching location by id:", error);
-      return null;
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleSelect = async (place: any) => {
-    const location = await getLocationById(place.id);
+  const handleSelect = (place: any) => {
+    const location = place.position;
     if (location) onSelect(location);
     setSuggestions([]);
-    setQuery(place.title);
+    setQuery(place.title || place.address?.label || "");
     setIsSelectQuery(true);
   };
 
@@ -95,7 +92,7 @@ const HereLocationPicker = ({
               onClick={() => handleSelect(place)}
               className="truncate text-sm py-2 px-4 cursor-pointer hover:bg-gray-100 active:bg-gray-200"
             >
-              {place.title}
+              {place.title || place.address?.label}
             </li>
           ))}
         </ul>

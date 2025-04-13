@@ -13,6 +13,10 @@
   color: white;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .3rem;
 }
 .button:hover {
   background: darkblue;
@@ -35,4 +39,8 @@
 .button-outline:active {
   background: darkblue;
   color: white;
+}
+.button svg {
+  width: 18px;
+  height: 18px;
 }

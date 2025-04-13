@@ -1,14 +1,16 @@
+import { IconPlus } from "@tabler/icons-react";
 import axios from "axios";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import "./App.css";
 import HereLocationPicker from "./components/HereLocationPicker";
+import LocationPermissionProxy from "./components/LocationPermissionProxy";
 import HOST from "./consts/host";
 import useAppContext from "./contexts/AppContext";
 
 function App() {
-  const { socket, guest, isInEvent } = useAppContext();
+  const { socket, guest, isInEvent, userLocation } = useAppContext();
   const [eventId, setEventId] = useState<string>("");
   const [name, setName] = useState<string>("");
   const [location, setLocation] = useState<string | null>(null);
@@ -72,63 +74,68 @@ function App() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center gap-4 py-10">
-      <h1 className="text-xl font-medium">Welcome {guest?.name}!</h1>
-      <div className="flex flex-col md:flex-row items-center justify-center gap-2">
-        <div className="flex flex-col gap-2 bg-gray-100 border p-4 rounded-md">
-          <input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            type="text"
-            className="border border-gray-300 rounded-md p-2"
-            placeholder="Event Name"
-          />
-          <input
-            value={eventDate}
-            onChange={(e) => setEventDate(e.target.value)}
-            type="datetime-local"
-            className="border border-gray-300 rounded-md p-2"
-          />
-          <HereLocationPicker
-            onSelect={(location) => {
-              setLocation(`${location.lat},${location.lng}`);
-            }}
-            placeholder="Event Location..."
-          />
-        </div>
-        <div className="md:self-end flex flex-col md:flex-row items-center gap-2">
-          <button
-            className="button"
-            onClick={create}
-            style={{
-              opacity:
-                !guest || !socket || !eventDate || !name || creating ? 0.5 : 1,
-            }}
-            disabled={!guest || !socket || !eventDate || !name || creating}
-          >
-            {creating ? "Creating..." : "Create Event"}
-          </button>
-          OR Join
-          <form
-            className="flex items-center gap-1"
-            onSubmit={(e) => e.preventDefault()}
-          >
+    <LocationPermissionProxy>
+      <div className="flex flex-col items-center justify-center gap-4 py-10">
+        <h1 className="text-xl font-medium">Welcome {guest?.name}!</h1>
+        <div className="flex flex-col md:flex-row items-center justify-center gap-2">
+          <div className="flex flex-col gap-2 bg-gray-100 border p-4 rounded-md">
             <input
-              value={eventId}
-              onChange={(e) => setEventId(e.target.value)}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               type="text"
-              placeholder="Event ID"
+              className="border border-gray-300 rounded-md p-2"
+              placeholder="Event Name"
+            />
+            <input
+              value={eventDate}
+              onChange={(e) => setEventDate(e.target.value)}
+              type="datetime-local"
               className="border border-gray-300 rounded-md p-2"
             />
-            {eventId !== "" && (
-              <Link to={`/join/${eventId}`}>
-                <button className="button button-outline">Join Event</button>
-              </Link>
-            )}
-          </form>
+            <HereLocationPicker
+              onSelect={(location) => {
+                setLocation(`${location.lat},${location.lng}`);
+              }}
+              placeholder="Event Location..."
+              currentLocation={userLocation}
+            />
+          </div>
+          <div className="md:self-end flex flex-col md:flex-row items-center gap-2">
+            <button
+              className="button"
+              onClick={create}
+              style={{
+                opacity:
+                  !guest || !socket || !eventDate || !name || creating
+                    ? 0.5
+                    : 1,
+              }}
+              disabled={!guest || !socket || !eventDate || !name || creating}
+            >
+              {creating ? "Creating..." : "Create Event"} <IconPlus />
+            </button>
+            OR Join
+            <form
+              className="flex items-center gap-1"
+              onSubmit={(e) => e.preventDefault()}
+            >
+              <input
+                value={eventId}
+                onChange={(e) => setEventId(e.target.value)}
+                type="text"
+                placeholder="Event ID"
+                className="border border-gray-300 rounded-md p-2"
+              />
+              {eventId !== "" && (
+                <Link to={`/join/${eventId}`}>
+                  <button className="button button-outline">Join Event</button>
+                </Link>
+              )}
+            </form>
+          </div>
         </div>
       </div>
-    </div>
+    </LocationPermissionProxy>
   );
 }
 
