@@ -1,11 +1,14 @@
 import {
   IconCalendarEvent,
   IconDoorExit,
-  IconDots,
+  IconHandStop,
+  IconHeartSpark,
+  IconInfoCircle,
   IconPin,
   IconPlayerPlay,
   IconPlayerStop,
 } from "@tabler/icons-react";
+import React from "react";
 import { useParams } from "react-router-dom";
 import { toast } from "sonner";
 import EventJoiner from "../components/EventJoiner";
@@ -22,7 +25,6 @@ import useLeaveEvent from "../hooks/useLeaveEvent";
 import useLoadEvent from "../hooks/useLoadEvent";
 import useUserJoinedEvent from "../hooks/useUserJoinedEvent";
 import useUserLeftEvent from "../hooks/useUserLeftEvent";
-import React from "react";
 
 export default function Event() {
   const { eventId } = useParams<{ eventId: string }>();
@@ -69,11 +71,12 @@ export default function Event() {
     );
   };
 
-  const wave = () => {
+  const wave = (type: "love" | "wave" = "wave") => {
     if (!guest || !socket || !event) return;
     socket.emit("wave", {
       eventId: event.id,
       guest: guest,
+      type: type,
     });
   };
 
@@ -91,20 +94,27 @@ export default function Event() {
             <div className="flex items-center justify-between w-full px-4 py-4 md:rounded-lg">
               <h1 className="text-xl font-medium flex w-full items-center gap-1 decoration-wavy underline decoration-blue-500 underline-offset-2">
                 <IconCalendarEvent className="min-w-10" /> {event.name}
+                <button
+                  className="max-h-8 max-w-8 min-w-8 min-h-8 rounded-full hover:bg-blue-50 text-gray-500 hover:text-blue-500 flex items-center justify-center"
+                  onClick={openEventDetails}
+                >
+                  <IconInfoCircle size={20} />
+                </button>
               </h1>
               <div className="flex items-center gap-1">
                 <button
                   className="max-h-10 max-w-10 min-w-10 min-h-10 rounded-full hover:bg-blue-50 text-gray-500 hover:text-blue-500 flex items-center justify-center text-xl active:scale-95 active:bg-blue-100"
                   title="Wave to all event members"
-                  onClick={wave}
+                  onClick={() => wave("love")}
                 >
-                  👋
+                  <IconHeartSpark />
                 </button>
                 <button
-                  className="max-h-10 max-w-10 min-w-10 min-h-10 rounded-full hover:bg-blue-50 text-gray-500 hover:text-blue-500 flex items-center justify-center"
-                  onClick={openEventDetails}
+                  className="max-h-10 rotate-12 max-w-10 min-w-10 min-h-10 rounded-full hover:bg-blue-50 text-gray-500 hover:text-blue-500 flex items-center justify-center text-xl active:scale-95 active:bg-blue-100"
+                  title="Wave to all event members"
+                  onClick={() => wave("wave")}
                 >
-                  <IconDots />
+                  <IconHandStop />
                 </button>
               </div>
             </div>

@@ -5,6 +5,7 @@ import useCreateWave from "./useCreateWave";
 interface JoinerWavedEvent {
   eventId: string;
   guest: any;
+  type: "love" | "wave";
 }
 
 const useJoinerWavedEvent = () => {
@@ -18,7 +19,7 @@ const useJoinerWavedEvent = () => {
       console.log(
         `Guest ${data.guest.name} waved in the event ${data.eventId}👋`
       );
-      createWave(data.guest.name, data.guest.id);
+      createWave(data.guest.name, data.guest.id, data.type);
     };
 
     socket.on("joinerWaved", handleJoinerWaved);

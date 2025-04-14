@@ -6,23 +6,36 @@ import "leaflet/dist/leaflet.css";
 import useEventContext from "../contexts/EventContext";
 
 // Helper to generate random hex color
-const getRandomColor = (): string => {
-  const letters = "0123456789ABCDEF";
-  let color = "#";
-  for (let i = 0; i < 6; i++) {
-    color += letters[Math.floor(Math.random() * 16)];
-  }
-  return color;
-};
+// const getRandomColor = (): string => {
+//   const letters = "0123456789ABCDEF";
+//   let color = "#";
+//   for (let i = 0; i < 6; i++) {
+//     color += letters[Math.floor(Math.random() * 16)];
+//   }
+//   return color;
+// };
 
 // Choose readable text color
-const getTextColor = (bgColor: string): string => {
-  const r = parseInt(bgColor.slice(1, 3), 16);
-  const g = parseInt(bgColor.slice(3, 5), 16);
-  const b = parseInt(bgColor.slice(5, 7), 16);
-  const luminance = 0.299 * r + 0.587 * g + 0.114 * b;
-  return luminance > 186 ? "#000000" : "#FFFFFF";
-};
+// const getTextColor = (bgColor: string): string => {
+//   const r = parseInt(bgColor.slice(1, 3), 16);
+//   const g = parseInt(bgColor.slice(3, 5), 16);
+//   const b = parseInt(bgColor.slice(5, 7), 16);
+//   const luminance = 0.299 * r + 0.587 * g + 0.114 * b;
+//   return luminance > 186 ? "#000000" : "#FFFFFF";
+// };
+
+const createJoinerMarker = (
+  joiner: any
+) => `<div class='flex items-center flex-col gap-1'>
+            <img src=${
+              joiner.guest.avatar ||
+              "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+            } class='h-10 w-10 bg-white rounded-full border border-blue-500 shadow-2xl'/><span class='border border-gray-100 text-[10px] bg-white px-2 py-1 rounded-full shadow-2xl block max-w-24 truncate'>${
+  joiner.guest.name
+}</span></div>`;
+
+const createEventMarker = (event: any) =>
+  `<div style='background-color: white; color: black; border: 1px solid #d9534f; padding: 4px 6px; border-radius: 6px; font-size: 12px; text-align: center; box-shadow: 0 0 4px rgba(0,0,0,0.4);'>📍 ${event.name}</div>`;
 
 export default function EventLiveMap({ className }: { className?: string }) {
   const { eventJoiners, event } = useEventContext();
@@ -63,15 +76,7 @@ export default function EventLiveMap({ className }: { className?: string }) {
           eventMarkerRef.current = L.marker(latLng, {
             icon: L.divIcon({
               className: "leaflet-div-icon",
-              html: `<div style="
-                background-color: #d9534f;
-                color: white;
-                padding: 4px 6px;
-                border-radius: 6px;
-                font-size: 12px;
-                text-align: center;
-                box-shadow: 0 0 4px rgba(0,0,0,0.4);
-              ">📍 ${event.name}</div>`,
+              html: createEventMarker(event),
               iconSize: [60, 25],
             }),
           })
@@ -99,8 +104,6 @@ export default function EventLiveMap({ className }: { className?: string }) {
       const lng = longitude + offset;
 
       const existing = markers.get(joiner.id);
-      const bgColor = getRandomColor();
-      const textColor = getTextColor(bgColor);
 
       if (existing) {
         existing.setLatLng([lat, lng]);
@@ -108,16 +111,8 @@ export default function EventLiveMap({ className }: { className?: string }) {
         const marker = L.marker([lat, lng], {
           icon: L.divIcon({
             className: "leaflet-div-icon",
-            html: `<div style="
-              background-color: ${bgColor};
-              padding: 5px;
-              border-radius: 50%;
-              color: ${textColor};
-              font-size: 12px;
-              text-align: center;
-              opacity: 0.9;
-            ">${joiner.guest.name.charAt(0)}</div>`,
-            iconSize: [30, 30],
+            html: createJoinerMarker(joiner),
+            iconSize: [10, 10],
           }),
         })
           .addTo(map)

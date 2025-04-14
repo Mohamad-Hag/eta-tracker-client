@@ -2,9 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-}
-
 .button {
   background: blue;
   padding: 0.5rem;
