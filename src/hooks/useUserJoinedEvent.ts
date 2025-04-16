@@ -32,6 +32,7 @@ const useUserJoinedEvent = () => {
             guest: data.guest,
             eta: null,
             status: "Not Started",
+            connected: true,
           };
           return [...prev, newGuest];
         }
@@ -41,7 +42,16 @@ const useUserJoinedEvent = () => {
           (joiner) => joiner.guest.id === data.guest.id
         );
         if (existJOiner.status !== "Not Started") startWatch();
-        return prev;
+        console.log("dddddd", prev.map((joiner) =>
+          joiner.guest.id === data.guest.id
+            ? { ...joiner, connected: true }
+            : joiner
+        ))
+        return prev.map((joiner) =>
+          joiner.guest.id === data.guest.id
+            ? { ...joiner, connected: true }
+            : joiner
+        );
       });
     };
 

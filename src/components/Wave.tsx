@@ -1,13 +1,14 @@
 import clsx from "clsx";
-import WaveGif from "../assets/wave.gif";
 import LoveGif from "../assets/love.gif";
+import WaveGif from "../assets/wave.gif";
+import { WaveType } from "../contexts/EventContext";
 
 interface WaveProps extends React.HTMLAttributes<HTMLDivElement> {
   label: string;
-  type?: "love" | "wave";
+  type?: WaveType;
 }
 
-export default function Wave({ label, type = 'wave', ...props }: WaveProps) {
+export default function Wave({ label, type = "wave", ...props }: WaveProps) {
   const { className, ...rest } = props;
   return (
     <div

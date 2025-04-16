@@ -11,6 +11,7 @@ import useAppContext from "../contexts/AppContext";
 import { secondsToDurationString } from "../utils/secondsToDuration";
 import Avatar from "./Avatar";
 import useEventContext from "../contexts/EventContext";
+import clsx from "clsx";
 
 interface EventJoinerProps {
   joiner: any;
@@ -21,11 +22,27 @@ export default function EventJoiner({ joiner }: EventJoinerProps) {
   const { waves } = useEventContext();
   const isYou = guest.id === joiner.guest?.id;
   const isWaving = waves.some((w) => w.joinerId === joiner.guest?.id);
+  const waveType = isWaving
+    ? waves.find((w) => w.joinerId === joiner.guest?.id)?.type
+    : null;
+  const waveEmoji =
+    waveType === "love" ? "💖" : waveType === "wave" ? "👋" : "👋";
+  const isOnline = joiner.connected;
 
   return (
-    <div className="flex items-center gap-4 p-4 bg-white md:rounded-2xl md:shadow-sm border-b md:border-t md:border-x md:hover:shadow-md transition-all w-full md:max-w-md">
+    <div
+      className={clsx(
+        "flex items-center gap-4 p-4 bg-white md:rounded-2xl md:shadow-sm border-b md:border-t md:border-x md:hover:shadow-md transition-all w-full md:max-w-md",
+        { "opacity-50": isYou ? false : isOnline === false }
+      )}
+    >
       {/* Avatar */}
-      <Avatar source={joiner.guest?.avatar} isYou={isYou} />
+      <Avatar
+        source={joiner.guest?.avatar}
+        isYou={isYou}
+        onlineBadge
+        isOnline={isYou ? true : isOnline}
+      />
 
       {/* Name and Status */}
       <div className="flex-1">
@@ -40,7 +57,9 @@ export default function EventJoiner({ joiner }: EventJoinerProps) {
             ) : joiner.early?.isEarly ? (
               <IconClockPin size={14} className="text-purple-500" />
             ) : (
-              iconStatusMap[joiner.status as keyof typeof iconStatusMap]
+              iconStatusMap[joiner.status as keyof typeof iconStatusMap] ?? (
+                <IconCircleFilled size={14} className="text-gray-500" />
+              )
             )}
             <span>{joiner.status}</span>
           </div>
@@ -58,7 +77,7 @@ export default function EventJoiner({ joiner }: EventJoinerProps) {
       </div>
 
       <div className="flex items-center gap-1">
-        {isWaving && <span className="text-lg animate-pulse">👋</span>}
+        {isWaving && <span className="text-lg animate-pulse">{waveEmoji}</span>}
         {/* ETA Badge */}
         <div className="text-xs bg-gray-100 text-gray-800 px-3 py-1 rounded-full flex items-center gap-1">
           <IconClock className="w-4 h-4" />

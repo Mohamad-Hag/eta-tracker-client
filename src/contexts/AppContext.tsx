@@ -115,12 +115,15 @@ export const AppProvider = (props: { children: React.ReactNode }) => {
     soc.on("connect", () => {
       console.log("Guest connected to server...");
     });
+    soc.on("disconnect", () => {
+      console.log("Guest disconnected from server...");
+    });
     setSocket(soc);
 
     return () => {
       soc.disconnect();
     };
-  }, [HOST]);
+  }, []);
 
   useCheckLocationPermission(setIsLocationPermissionGranted, setUserLocation);
 

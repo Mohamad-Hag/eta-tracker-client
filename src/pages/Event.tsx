@@ -25,6 +25,7 @@ import useLeaveEvent from "../hooks/useLeaveEvent";
 import useLoadEvent from "../hooks/useLoadEvent";
 import useUserJoinedEvent from "../hooks/useUserJoinedEvent";
 import useUserLeftEvent from "../hooks/useUserLeftEvent";
+import useDisconnectedEvent from "../hooks/useUserDisconnectedEvent";
 
 export default function Event() {
   const { eventId } = useParams<{ eventId: string }>();
@@ -60,6 +61,7 @@ export default function Event() {
   useETAUpdatedEvent();
   useUserLeftEvent();
   useJoinerWavedEvent();
+  useDisconnectedEvent();
 
   const openEventDetails = () => {
     toast.info(

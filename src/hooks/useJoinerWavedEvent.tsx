@@ -1,11 +1,12 @@
 import { useEffect } from "react";
 import useAppContext from "../contexts/AppContext";
 import useCreateWave from "./useCreateWave";
+import { WaveType } from "../contexts/EventContext";
 
 interface JoinerWavedEvent {
   eventId: string;
   guest: any;
-  type: "love" | "wave";
+  type: WaveType;
 }
 
 const useJoinerWavedEvent = () => {

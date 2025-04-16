@@ -1,6 +1,15 @@
 import { createContext, useContext, useState } from "react";
 import useStartWatch from "../hooks/useStartWatch";
 
+export type WaveType = 'wave' | 'love'
+
+export interface Wave {
+  wave: React.ReactNode;
+  id: string;
+  joinerId: string;
+  type: WaveType;
+}
+
 interface IEventContext {
   event: any;
   setEvent: (event: any) => void;
@@ -10,12 +19,8 @@ interface IEventContext {
   stopWatch: () => void;
   isWatchStarted: boolean;
   isWatching: boolean;
-  waves: { wave: React.ReactNode; id: string; joinerId: string }[];
-  setWaves: React.Dispatch<
-    React.SetStateAction<
-      { wave: React.ReactNode; id: string; joinerId: string }[]
-    >
-  >;
+  waves: Wave[];
+  setWaves: React.Dispatch<React.SetStateAction<Wave[]>>;
 }
 
 const EventContext = createContext<IEventContext>(null!);
@@ -25,9 +30,7 @@ export const EventProvider = ({ children }: { children: React.ReactNode }) => {
   const [eventJoiners, setEventJoiners] = useState<any[]>([]);
   const { isWatchStarted, isWatching, startWatch, stopWatch } =
     useStartWatch(event);
-  const [waves, setWaves] = useState<
-    { wave: React.ReactNode; id: string; joinerId: string }[]
-  >([]);
+  const [waves, setWaves] = useState<Wave[]>([]);
 
   return (
     <EventContext.Provider

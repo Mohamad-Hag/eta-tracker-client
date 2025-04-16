@@ -11,7 +11,12 @@ const useCreateWave = () => {
     type: "love" | "wave" = "wave"
   ) => {
     const id = uuidv4(); // unique id for this wave
-    const wave = { id, joinerId, wave: <Wave type={type} label={label} /> };
+    const wave = {
+      id,
+      joinerId,
+      wave: <Wave type={type} label={label} />,
+      type,
+    };
 
     setWaves((prev) => [...prev, wave]);
 

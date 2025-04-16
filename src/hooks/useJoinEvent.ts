@@ -9,6 +9,7 @@ const useJoinEvent = (id?: string) => {
   const join = async () => {
     try {
       await joinEvent(id!, guest.id, socket!.id!);
+      socket?.emit("registerUser", { guest, eventId: id! });
       console.log("Successfully joined the event! ✅");
     } catch (error) {
       console.error("Error joining event:", error);
