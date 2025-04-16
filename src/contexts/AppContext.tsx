@@ -1,13 +1,14 @@
+import { lorelei } from "@dicebear/collection";
+import { createAvatar } from "@dicebear/core";
 import axios from "axios";
 import React, { createContext, useEffect, useRef, useState } from "react";
 import { io, Socket } from "socket.io-client";
+import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
 import HOST from "../consts/host";
 import useCheckLocationPermission from "../hooks/useCheckLocationPermission";
 import useIsAlreadyInEvent from "../hooks/useIsAlreadyInEvent";
 import { AppLocation } from "../utils/parseLocationString";
-import { createAvatar } from "@dicebear/core";
-import { lorelei } from "@dicebear/collection";
 
 type Guest = any;
 
@@ -110,6 +111,10 @@ export const AppProvider = (props: { children: React.ReactNode }) => {
     } else setGuest(JSON.parse(storedGuest));
   }, []);
 
+  const handleOffline = () => {
+    toast.info("You're offline 🚫 Check your connection");
+  };
+
   useEffect(() => {
     const soc = io(HOST);
     soc.on("connect", () => {
@@ -120,8 +125,11 @@ export const AppProvider = (props: { children: React.ReactNode }) => {
     });
     setSocket(soc);
 
+    window.addEventListener("offline", handleOffline);
+
     return () => {
       soc.disconnect();
+      window.removeEventListener("offline", handleOffline);
     };
   }, []);
 
