@@ -6,6 +6,7 @@ import getEventJoiners, { getEventById } from "../services/events";
 const useLoadEvent = (id?: string) => {
   const { setEvent, setEventJoiners } = useEventContext();
   const [eventLoading, setEventLoading] = useState<boolean>(true);
+  const [eventErrors, setEventErrors] = useState<string[]>([]);
   const [joinersLoading, setJoinersLoading] = useState<boolean>(true);
 
   const fetchEvent = async () => {
@@ -18,9 +19,9 @@ const useLoadEvent = (id?: string) => {
       setEventLoading(true);
       const response = await getEventById(id);
       setEvent(response);
+      if (response.error) setErrors("Failed to fetch event data");
     } catch (error) {
-      console.error("Error fetching event data:", error);
-      toast.error("Failed to fetch event data");
+      setErrors("Failed to fetch event data", error);
     } finally {
       setEventLoading(false);
     }
@@ -36,12 +37,18 @@ const useLoadEvent = (id?: string) => {
       setJoinersLoading(true);
       const response = await getEventJoiners(id);
       setEventJoiners(response);
+      if (response.error) setErrors("Failed to fetch event joiners");
     } catch (error) {
-      console.error("Error fetching event joiners:", error);
-      toast.error("Failed to fetch event joiners");
+      setErrors("Failed to fetch event joiners", error);
     } finally {
       setJoinersLoading(false);
     }
+  };
+
+  const setErrors = (errorString: string, error?: any) => {
+    setEventErrors((prev) => [...prev, errorString]);
+    console.error(errorString, error ?? "");
+    toast.error(errorString);
   };
 
   const loadEvent = async () => {
@@ -52,7 +59,10 @@ const useLoadEvent = (id?: string) => {
     loadEvent();
   }, [id]);
 
-  return { loading: eventLoading || joinersLoading };
+  return {
+    loading: eventLoading || joinersLoading,
+    errors: eventErrors,
+  };
 };
 
 export default useLoadEvent;

@@ -1,4 +1,4 @@
-import { IconCircleFilled } from "@tabler/icons-react";
+import { IconCircleDotted, IconCircleFilled } from "@tabler/icons-react";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
@@ -83,8 +83,8 @@ const HereLocationPicker = ({
           }}
         />
         {isLoading && (
-          <div className="absolute top-1/2 right-2 -translate-y-1/2 text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
-            Loading...
+          <div className="absolute top-1/2 right-2 -translate-y-1/2 text-xs text-gray-500 px-2 py-1 rounded-full">
+            <IconCircleDotted className="animate-spin" />
           </div>
         )}
       </div>

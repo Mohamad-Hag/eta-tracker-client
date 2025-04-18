@@ -111,9 +111,10 @@ export const AppProvider = (props: { children: React.ReactNode }) => {
     } else setGuest(JSON.parse(storedGuest));
   }, []);
 
-  const handleOffline = () => {
-    toast.info("You're offline 🚫 Check your connection");
-  };
+  const handleOffline = () =>
+    toast.warning("You're offline 🚫 Check your connection...");
+
+  const handleOnline = () => toast.success("Back online ✅");
 
   useEffect(() => {
     const soc = io(HOST);
@@ -126,10 +127,12 @@ export const AppProvider = (props: { children: React.ReactNode }) => {
     setSocket(soc);
 
     window.addEventListener("offline", handleOffline);
+    window.addEventListener("online", handleOnline);
 
     return () => {
       soc.disconnect();
       window.removeEventListener("offline", handleOffline);
+      window.removeEventListener("online", handleOnline);
     };
   }, []);
 

@@ -1,5 +1,6 @@
 import {
   IconCalendarEvent,
+  IconCircleDotted,
   IconDoorExit,
   IconHandStop,
   IconHeartSpark,
@@ -7,6 +8,7 @@ import {
   IconPin,
   IconPlayerPlay,
   IconPlayerStop,
+  IconZoomExclamation,
 } from "@tabler/icons-react";
 import React from "react";
 import { useParams } from "react-router-dom";
@@ -23,9 +25,12 @@ import useJoinerWavedEvent from "../hooks/useJoinerWavedEvent";
 import useJoinEvent from "../hooks/useJoinEvent";
 import useLeaveEvent from "../hooks/useLeaveEvent";
 import useLoadEvent from "../hooks/useLoadEvent";
+import useDisconnectedEvent from "../hooks/useUserDisconnectedEvent";
 import useUserJoinedEvent from "../hooks/useUserJoinedEvent";
 import useUserLeftEvent from "../hooks/useUserLeftEvent";
-import useDisconnectedEvent from "../hooks/useUserDisconnectedEvent";
+import usePreloadImages from "../hooks/usePreloadImages";
+import WaveGif from "../assets/wave.gif";
+import LoveGif from "../assets/love.gif";
 
 export default function Event() {
   const { eventId } = useParams<{ eventId: string }>();
@@ -39,8 +44,9 @@ export default function Event() {
     waves,
   } = useEventContext();
   const { socket, guest } = useAppContext();
-  const { loading: eventLoading } = useLoadEvent(eventId);
+  const { loading: eventLoading, errors: eventErrors } = useLoadEvent(eventId);
   const { leave: leaveEvent, leaving } = useLeaveEvent();
+  const noEventErrors = eventErrors.length === 0;
 
   const isLast = eventJoiners.length === 1;
   const leaveConfirmMessage = `Are you sure you want to leave the event? ${
@@ -54,9 +60,10 @@ export default function Event() {
     if (confirmed) leaveEvent();
   };
 
-  useJoinEvent(eventId);
+  useJoinEvent(eventId, noEventErrors);
 
   // Event Listners
+  usePreloadImages([WaveGif, LoveGif], noEventErrors);
   useUserJoinedEvent();
   useETAUpdatedEvent();
   useUserLeftEvent();
@@ -83,7 +90,14 @@ export default function Event() {
   };
 
   if (leaving) return <Text>Leaving...</Text>;
-  if (eventLoading) return <Text>Loading...</Text>;
+  if (eventLoading)
+    return (
+      <Text leftIcon={<IconCircleDotted className="animate-spin" />}>
+        Loading...
+      </Text>
+    );
+  if (eventErrors.length > 0)
+    return <Text leftIcon={<IconZoomExclamation />}>Event Not Found</Text>;
   return (
     <LocationPermissionProxy>
       <>
@@ -95,7 +109,8 @@ export default function Event() {
           <div className="flex flex-col gap-4 items-start justify-center py-10 md:px-2 w-full md:max-w-md">
             <div className="flex items-center justify-between w-full px-4 py-4 md:rounded-lg">
               <h1 className="text-xl font-medium flex w-full items-center gap-1 decoration-wavy underline decoration-blue-500 underline-offset-2">
-                <IconCalendarEvent className="min-w-10" /> {event.name}
+                <IconCalendarEvent className="min-w-10" />{" "}
+                <span className="max-w-[200px]">{event.name}</span>
                 <button
                   className="max-h-8 max-w-8 min-w-8 min-h-8 rounded-full hover:bg-blue-50 text-gray-500 hover:text-blue-500 flex items-center justify-center"
                   onClick={openEventDetails}

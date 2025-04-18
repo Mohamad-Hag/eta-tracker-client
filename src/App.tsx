@@ -1,4 +1,4 @@
-import { IconPlus } from "@tabler/icons-react";
+import { IconCircleDotted, IconPlus } from "@tabler/icons-react";
 import axios from "axios";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -113,7 +113,12 @@ function App() {
               }}
               disabled={!guest || !socket || !eventDate || !name || creating}
             >
-              {creating ? "Creating..." : "Create Event"} <IconPlus />
+              {creating ? "Creating..." : "Create Event"}{" "}
+              {creating ? (
+                <IconCircleDotted className="animate-spin" />
+              ) : (
+                <IconPlus />
+              )}
             </button>
             OR Join
             <form

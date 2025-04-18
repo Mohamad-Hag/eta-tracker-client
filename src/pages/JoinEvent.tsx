@@ -1,8 +1,10 @@
 import {
   IconCalendar,
+  IconCircleDotted,
   IconDoorEnter,
   IconHome,
   IconMap,
+  IconZoomExclamation,
 } from "@tabler/icons-react";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -42,9 +44,14 @@ function JoinEvent() {
     fetchEventData();
   }, [eventId, socket, isInEvent]);
 
-  if (loading) return <Text>Loading event data...</Text>;
-  if (!eventData) return <Text>Event not found</Text>;
-
+  if (loading)
+    return (
+      <Text leftIcon={<IconCircleDotted className="animate-spin" />}>
+        Loading event data...
+      </Text>
+    );
+  if (!eventData)
+    return <Text leftIcon={<IconZoomExclamation />}>Event not found</Text>;
   return (
     <LocationPermissionProxy>
       <div className="flex flex-col items-center justify-center gap-4 py-10">

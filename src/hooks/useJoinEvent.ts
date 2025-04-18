@@ -3,7 +3,7 @@ import useAppContext from "../contexts/AppContext";
 import { joinEvent } from "../services/events";
 import { useEffect } from "react";
 
-const useJoinEvent = (id?: string) => {
+const useJoinEvent = (id?: string, start: boolean = false) => {
   const { guest, socket } = useAppContext();
 
   const join = async () => {
@@ -18,9 +18,9 @@ const useJoinEvent = (id?: string) => {
   };
 
   useEffect(() => {
-    if (!id || !guest || !socket || !socket.id) return;
+    if (!id || !guest || !socket || !socket.id || !start) return;
     join();
-  }, [id, guest, socket, socket?.id]);
+  }, [id, guest, socket, socket?.id, start]);
 };
 
 export default useJoinEvent;
