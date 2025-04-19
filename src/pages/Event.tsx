@@ -144,6 +144,7 @@ export default function Event() {
               mode={transportMode}
               onChange={(m) => setTransportMode(m.value as TransportMode)}
               readonly={isWatchStarted}
+              readonlyMessage="Stop location tracking to change mode."
             />
             <div className="flex items-center gap-2 border-b md:border-b-0 pb-6 w-full px-4">
               <button

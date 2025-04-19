@@ -12,6 +12,7 @@ interface TransportModeSelectorProps {
   mode?: TransportMode;
   onChange?: (mode: TransportModeObject) => void;
   readonly?: boolean;
+  readonlyMessage?: string;
 }
 
 export default function TransportModeSelector({
@@ -19,6 +20,7 @@ export default function TransportModeSelector({
   mode,
   onChange,
   readonly = false,
+  readonlyMessage,
 }: TransportModeSelectorProps) {
   const [active, setActive] = useState<TransportMode | undefined>(mode);
   const [expanded, setExpanded] = useState<boolean>(false);
@@ -50,9 +52,16 @@ export default function TransportModeSelector({
             if (!readonly) setExpanded(!expanded);
           }}
         >
-          <div className="flex items-center gap-1">
-            Mode <IconArrowRight /> {transportMode?.label}{" "}
-            <div className="scale-90">{transportMode?.icon}</div>
+          <div className="">
+            <div className="flex items-center gap-1">
+              Mode <IconArrowRight /> {transportMode?.label}{" "}
+              <div className="scale-90">{transportMode?.icon}</div>
+            </div>
+            {readonly && readonlyMessage && (
+              <p className="self-start text-start text-xs text-gray-400">
+                {readonlyMessage}
+              </p>
+            )}
           </div>
           {!readonly && <IconChevronDown />}
         </button>
