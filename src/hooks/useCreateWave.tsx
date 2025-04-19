@@ -12,10 +12,6 @@ const useCreateWave = () => {
     joinerId: string,
     type: "love" | "wave" = "wave"
   ) => {
-    if ("vibrate" in navigator) {
-      navigator.vibrate(type === "love" ? 200 : 100);
-    }
-
     const id = uuidv4(); // unique id for this wave
     const wave = {
       id,

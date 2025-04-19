@@ -86,6 +86,7 @@ export default function Event() {
 
   const wave = (type: "love" | "wave" = "wave") => {
     if (!guest || !socket || !event) return;
+    if ("vibrate" in navigator) navigator.vibrate(50);
     socket.emit("wave", {
       eventId: event.id,
       guest: guest,
