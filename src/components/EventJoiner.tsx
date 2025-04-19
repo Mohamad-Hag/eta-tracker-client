@@ -7,11 +7,12 @@ import {
   IconClockX,
   IconPlayerPlay,
 } from "@tabler/icons-react";
+import clsx from "clsx";
 import useAppContext from "../contexts/AppContext";
+import useEventContext from "../contexts/EventContext";
+import { TransportModeObject, transportModes } from "../typings/TransportMode";
 import { secondsToDurationString } from "../utils/secondsToDuration";
 import Avatar from "./Avatar";
-import useEventContext from "../contexts/EventContext";
-import clsx from "clsx";
 
 interface EventJoinerProps {
   joiner: any;
@@ -28,6 +29,11 @@ export default function EventJoiner({ joiner }: EventJoinerProps) {
   const waveEmoji =
     waveType === "love" ? "💖" : waveType === "wave" ? "👋" : "👋";
   const isOnline = joiner.connected;
+  const mode: TransportModeObject = transportModes.find((m) =>
+    joiner.transport_mode
+      ? m.value === joiner.transport_mode
+      : m.value === "car"
+  )!;
 
   return (
     <div
@@ -46,9 +52,15 @@ export default function EventJoiner({ joiner }: EventJoinerProps) {
 
       {/* Name and Status */}
       <div className="flex-1">
-        <div className="font-semibold text-base text-nowrap">
-          <span className="truncate">{joiner.guest?.name}</span>{" "}
-          {isYou && "(You)"}
+        <div className="font-semibold text-base text-nowrap flex items-center gap-1">
+          <span className="truncate">
+            {joiner.guest?.name} {isYou && "(You)"}
+          </span>
+          {mode && (
+            <span className="scale-75 text-gray-500 border border-gray-300 bg-gray-100 h-8 w-8 flex items-center justify-center rounded-lg">
+              {mode.icon}
+            </span>
+          )}
         </div>
         <div className="text-sm text-gray-500 flex items-center flex-wrap gap-1 mt-1">
           <div className="flex items-center gap-1">

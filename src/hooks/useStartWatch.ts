@@ -1,13 +1,14 @@
 import { useState } from "react";
 import useAppContext from "../contexts/AppContext";
 import { updateLocation } from "../services/events";
+import { TransportMode } from "../typings/TransportMode";
 
 const useStartWatch = (event: any) => {
   const { watchLocation, stopWatchLocation, guest, socket } = useAppContext();
   const [isWatchStarted, setIsWatchStarted] = useState<boolean>(false);
   const [isWatching, setIsWatching] = useState<boolean>(false);
 
-  const startWatch = () => {
+  const startWatch = (transportMode: TransportMode = "car") => {
     if (!guest || !event || !socket) return;
     watchLocation(async (coords: any) => {
       setIsWatching(true);
@@ -15,7 +16,8 @@ const useStartWatch = (event: any) => {
         `${coords.latitude},${coords.longitude}`,
         guest?.id,
         event?.id,
-        socket?.id!
+        socket?.id!,
+        transportMode
       );
       setIsWatching(false);
       return update;

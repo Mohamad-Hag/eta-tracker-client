@@ -5,7 +5,7 @@ import { useRef } from "react";
 
 const useCreateWave = () => {
   const { setWaves } = useEventContext();
-  const timers = useRef<{ [key: string]: NodeJS.Timeout }>({});
+  const timers = useRef<{ [key: string]: any }>({});
 
   const createWave = (
     label: string,

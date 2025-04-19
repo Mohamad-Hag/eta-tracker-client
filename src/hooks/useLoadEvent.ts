@@ -2,9 +2,11 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import useEventContext from "../contexts/EventContext";
 import getEventJoiners, { getEventById } from "../services/events";
+import useAppContext from "../contexts/AppContext";
 
 const useLoadEvent = (id?: string) => {
-  const { setEvent, setEventJoiners } = useEventContext();
+  const { setEvent, setEventJoiners, setTransportMode } = useEventContext();
+  const { guest } = useAppContext();
   const [eventLoading, setEventLoading] = useState<boolean>(true);
   const [eventErrors, setEventErrors] = useState<string[]>([]);
   const [joinersLoading, setJoinersLoading] = useState<boolean>(true);
@@ -33,10 +35,15 @@ const useLoadEvent = (id?: string) => {
       return;
     }
 
+    if (!guest) return;
+
     try {
       setJoinersLoading(true);
       const response = await getEventJoiners(id);
       setEventJoiners(response);
+      setTransportMode(
+        response.find((j: any) => j.guest.id === guest.id)?.transport_mode
+      );
       if (response.error) setErrors("Failed to fetch event joiners");
     } catch (error) {
       setErrors("Failed to fetch event joiners", error);
@@ -57,7 +64,7 @@ const useLoadEvent = (id?: string) => {
 
   useEffect(() => {
     loadEvent();
-  }, [id]);
+  }, [id, guest]);
 
   return {
     loading: eventLoading || joinersLoading,

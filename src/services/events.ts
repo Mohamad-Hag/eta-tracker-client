@@ -1,5 +1,6 @@
 import axios from "axios";
 import HOST from "../consts/host";
+import { TransportMode } from "../typings/TransportMode";
 
 export async function getEventById(id: string) {
   try {
@@ -40,7 +41,8 @@ export async function updateLocation(
   location: string,
   guestId: string,
   eventId: string,
-  socketId: string
+  socketId: string,
+  transportMode: TransportMode
 ) {
   try {
     const response = await axios.post(`${HOST}/api/locations/update`, {
@@ -48,6 +50,7 @@ export async function updateLocation(
       guest_id: guestId,
       event_id: eventId,
       socket_id: socketId,
+      transport_mode: transportMode,
     });
     console.log("Location Update Response:", response.data);
     return response.data;

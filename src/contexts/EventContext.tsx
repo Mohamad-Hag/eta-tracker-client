@@ -1,7 +1,8 @@
 import { createContext, useContext, useState } from "react";
 import useStartWatch from "../hooks/useStartWatch";
+import { TransportMode } from "../typings/TransportMode";
 
-export type WaveType = 'wave' | 'love'
+export type WaveType = "wave" | "love";
 
 export interface Wave {
   wave: React.ReactNode;
@@ -15,7 +16,9 @@ interface IEventContext {
   setEvent: (event: any) => void;
   eventJoiners: any[];
   setEventJoiners: React.Dispatch<React.SetStateAction<any[]>>;
-  startWatch: () => void;
+  setTransportMode: React.Dispatch<React.SetStateAction<TransportMode>>;
+  transportMode: TransportMode;
+  startWatch: (transportMode?: TransportMode) => void;
   stopWatch: () => void;
   isWatchStarted: boolean;
   isWatching: boolean;
@@ -28,9 +31,10 @@ const EventContext = createContext<IEventContext>(null!);
 export const EventProvider = ({ children }: { children: React.ReactNode }) => {
   const [event, setEvent] = useState<any>(null);
   const [eventJoiners, setEventJoiners] = useState<any[]>([]);
+  const [waves, setWaves] = useState<Wave[]>([]);
+  const [transportMode, setTransportMode] = useState<TransportMode>("car");
   const { isWatchStarted, isWatching, startWatch, stopWatch } =
     useStartWatch(event);
-  const [waves, setWaves] = useState<Wave[]>([]);
 
   return (
     <EventContext.Provider
@@ -45,6 +49,8 @@ export const EventProvider = ({ children }: { children: React.ReactNode }) => {
         isWatching,
         waves,
         setWaves,
+        transportMode,
+        setTransportMode,
       }}
     >
       {children}

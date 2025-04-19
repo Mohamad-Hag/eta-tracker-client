@@ -10,7 +10,8 @@ interface UserJoinedEvent {
 
 const useUserJoinedEvent = () => {
   const { socket, guest } = useAppContext();
-  const { setEventJoiners, startWatch, event } = useEventContext();
+  const { setEventJoiners, startWatch, event, setTransportMode } =
+    useEventContext();
 
   useEffect(() => {
     if (!socket || !event || !guest) return;
@@ -38,15 +39,12 @@ const useUserJoinedEvent = () => {
         }
 
         // Check if the current existing joiner status is not "Not Started". If yes we should start watching location.
-        const existJOiner = prev.find(
+        const existJoiner = prev.find(
           (joiner) => joiner.guest.id === data.guest.id
         );
-        if (existJOiner.status !== "Not Started") startWatch();
-        console.log("dddddd", prev.map((joiner) =>
-          joiner.guest.id === data.guest.id
-            ? { ...joiner, connected: true }
-            : joiner
-        ))
+        setTransportMode(existJoiner.transportMode || "car");
+        if (existJoiner.status !== "Not Started")
+          startWatch(existJoiner.transportMode);
         return prev.map((joiner) =>
           joiner.guest.id === data.guest.id
             ? { ...joiner, connected: true }

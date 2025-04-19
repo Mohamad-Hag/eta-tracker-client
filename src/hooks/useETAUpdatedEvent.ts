@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import useAppContext from "../contexts/AppContext";
 import useEventContext from "../contexts/EventContext";
+import { TransportMode } from "../typings/TransportMode";
 
 interface ETAUpdatedEvent {
   guestId: string;
@@ -9,6 +10,7 @@ interface ETAUpdatedEvent {
   status: string;
   late: { isLate: boolean; amount: number }; // Amount in Minutes
   early: { isEarly: boolean; amount: number }; // Amount in Minutes
+  transportMode: TransportMode;
 }
 
 const useETAUpdatedEvent = () => {
@@ -33,6 +35,7 @@ const useETAUpdatedEvent = () => {
                 location: data.location,
                 late: data.late,
                 early: data.early,
+                transport_mode: data.transportMode,
               }
             : joiner
         )

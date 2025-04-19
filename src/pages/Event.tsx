@@ -31,6 +31,8 @@ import useUserLeftEvent from "../hooks/useUserLeftEvent";
 import usePreloadImages from "../hooks/usePreloadImages";
 import WaveGif from "../assets/wave.gif";
 import LoveGif from "../assets/love.gif";
+import TransportModeSelector from "../components/TransportModeSelector";
+import { TransportMode } from "../typings/TransportMode";
 
 export default function Event() {
   const { eventId } = useParams<{ eventId: string }>();
@@ -42,6 +44,8 @@ export default function Event() {
     stopWatch,
     isWatching,
     waves,
+    transportMode,
+    setTransportMode,
   } = useEventContext();
   const { socket, guest } = useAppContext();
   const { loading: eventLoading, errors: eventErrors } = useLoadEvent(eventId);
@@ -135,10 +139,17 @@ export default function Event() {
                 </button>
               </div>
             </div>
+            <TransportModeSelector
+              mode={transportMode}
+              onChange={(m) => setTransportMode(m.value as TransportMode)}
+              readonly={isWatchStarted}
+            />
             <div className="flex items-center gap-2 border-b md:border-b-0 pb-6 w-full px-4">
               <button
                 className="button flex-1"
-                onClick={isWatchStarted ? stopWatch : startWatch}
+                onClick={
+                  isWatchStarted ? stopWatch : () => startWatch(transportMode)
+                }
               >
                 {isWatchStarted ? "Stop" : "Start"}
                 {isWatchStarted ? <IconPlayerStop /> : <IconPlayerPlay />}
