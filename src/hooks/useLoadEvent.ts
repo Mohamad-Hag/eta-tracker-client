@@ -6,7 +6,7 @@ import useAppContext from "../contexts/AppContext";
 
 const useLoadEvent = (id?: string) => {
   const { setEvent, setEventJoiners, setTransportMode } = useEventContext();
-  const { guest } = useAppContext();
+  const { guest, isOnline } = useAppContext();
   const [eventLoading, setEventLoading] = useState<boolean>(true);
   const [eventErrors, setEventErrors] = useState<string[]>([]);
   const [joinersLoading, setJoinersLoading] = useState<boolean>(true);
@@ -16,6 +16,7 @@ const useLoadEvent = (id?: string) => {
       toast.error("Event ID is required");
       return;
     }
+    if (!isOnline) return;
 
     try {
       setEventLoading(true);
@@ -35,7 +36,7 @@ const useLoadEvent = (id?: string) => {
       return;
     }
 
-    if (!guest) return;
+    if (!guest || !isOnline) return;
 
     try {
       setJoinersLoading(true);
@@ -64,7 +65,7 @@ const useLoadEvent = (id?: string) => {
 
   useEffect(() => {
     loadEvent();
-  }, [id, guest]);
+  }, [id, guest, isOnline]);
 
   return {
     loading: eventLoading || joinersLoading,

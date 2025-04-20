@@ -14,11 +14,11 @@ interface ETAUpdatedEvent {
 }
 
 const useETAUpdatedEvent = () => {
-  const { socket } = useAppContext();
+  const { socket, isOnline } = useAppContext();
   const { setEventJoiners } = useEventContext();
 
   useEffect(() => {
-    if (!socket) return;
+    if (!socket || !isOnline) return;
 
     const handleETAUpdated = (data: ETAUpdatedEvent) => {
       console.log(
@@ -48,7 +48,7 @@ const useETAUpdatedEvent = () => {
       console.log("Cleaning et event");
       socket.off("etaUpdated", handleETAUpdated); // Clean up on unmount
     };
-  }, [socket, setEventJoiners]); // Only depend on socket and setEventJoiners
+  }, [socket, setEventJoiners, isOnline]); // Only depend on socket, setEventJoiners, and isOnline state
 };
 
 export default useETAUpdatedEvent;

@@ -8,11 +8,11 @@ interface UserLeftEvent {
 }
 
 const useUserLeftEvent = () => {
-  const { socket, guest } = useAppContext();
+  const { socket, guest, isOnline } = useAppContext();
   const { setEventJoiners, stopWatch, event, isWatchStarted } =
     useEventContext();
   useEffect(() => {
-    if (!socket || !event || !guest) return;
+    if (!socket || !event || !guest || !isOnline) return;
 
     const handleUserLeft = (data: UserLeftEvent) => {
       console.log(`User ${data.guest.name} left the event ${event.id}⬆️`);
@@ -34,7 +34,7 @@ const useUserLeftEvent = () => {
       console.log("Cleaning userLeft event");
       socket.off("userLeft", handleUserLeft); // Clean up on unmount
     };
-  }, [socket, event, setEventJoiners, stopWatch, guest]);
+  }, [socket, event, setEventJoiners, stopWatch, guest, isOnline]);
 };
 
 export default useUserLeftEvent;

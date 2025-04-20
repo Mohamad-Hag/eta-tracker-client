@@ -9,12 +9,12 @@ interface UserJoinedEvent {
 }
 
 const useUserJoinedEvent = () => {
-  const { socket, guest } = useAppContext();
+  const { socket, guest, isOnline } = useAppContext();
   const { setEventJoiners, startWatch, event, setTransportMode } =
     useEventContext();
 
   useEffect(() => {
-    if (!socket || !event || !guest) return;
+    if (!socket || !event || !guest || !isOnline) return;
 
     const handleUserJoined = (data: UserJoinedEvent) => {
       console.log(`User ${data.guest.name} joined event ${data.eventId}`);
@@ -59,7 +59,7 @@ const useUserJoinedEvent = () => {
       console.log("Cleaning userJoined event");
       socket.off("userJoined", handleUserJoined); // Clean up on unmount
     };
-  }, [socket, event, setEventJoiners, startWatch, guest]); // Only depend on socket and setEventJoiners
+  }, [socket, event, setEventJoiners, startWatch, guest, isOnline]); // Only depend on socket and setEventJoiners
 };
 
 export default useUserJoinedEvent;

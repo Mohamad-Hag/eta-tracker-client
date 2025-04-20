@@ -28,6 +28,8 @@ interface AppContextType {
   setIsInEvent: React.Dispatch<React.SetStateAction<boolean>>;
   userLocation: AppLocation | null;
   setUserLocation: React.Dispatch<React.SetStateAction<AppLocation | null>>;
+  isOnline: boolean;
+  setIsOnline: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const AppContext = createContext<AppContextType | null>(null);
@@ -39,6 +41,7 @@ export const AppProvider = (props: { children: React.ReactNode }) => {
   const [isInEvent, setIsInEvent] = useState<boolean>(false);
   const isGuestInEvent = useIsAlreadyInEvent(guest);
   const [userLocation, setUserLocation] = useState<AppLocation | null>(null);
+  const [isOnline, setIsOnline] = useState<boolean>(true);
 
   const [isLocationPermissionGranted, setIsLocationPermissionGranted] =
     useState<boolean>(true);
@@ -111,15 +114,32 @@ export const AppProvider = (props: { children: React.ReactNode }) => {
     } else setGuest(JSON.parse(storedGuest));
   }, []);
 
-  const handleOffline = () =>
+  const handleOffline = () => {
     toast.warning("You're offline 🚫 Check your connection...");
+    setIsOnline(false);
+  };
 
-  const handleOnline = () => toast.success("Back online ✅");
+  const handleOnline = () => {
+    toast.success("Back online ✅");
+    setIsOnline(true);
+  };
+
+  const handleVisibilityChange = (soc: Socket) => {
+    if (document.visibilityState === "visible") {
+      console.log("Guest reconnected to server...");
+      console.log("Socket Connected State:", soc?.connected);
+      soc?.connect();
+    }
+  };
 
   useEffect(() => {
     const soc = io(HOST);
     soc.on("connect", () => {
       console.log("Guest connected to server...");
+    });
+    soc.on("reconnect_attempt", (attemptNumber) => {
+      console.log(`🔁 Reconnect attempt #${attemptNumber}`);
+      toast.info(`Reconnect attempt #${attemptNumber}`);
     });
     soc.on("disconnect", () => {
       console.log("Guest disconnected from server...");
@@ -128,11 +148,17 @@ export const AppProvider = (props: { children: React.ReactNode }) => {
 
     window.addEventListener("offline", handleOffline);
     window.addEventListener("online", handleOnline);
+    window.addEventListener("visibilitychange", () =>
+      handleVisibilityChange(soc)
+    );
 
     return () => {
       soc.disconnect();
       window.removeEventListener("offline", handleOffline);
       window.removeEventListener("online", handleOnline);
+      window.removeEventListener("visibilitychange", () =>
+        handleVisibilityChange(soc)
+      );
     };
   }, []);
 
@@ -156,6 +182,8 @@ export const AppProvider = (props: { children: React.ReactNode }) => {
         setIsInEvent,
         userLocation,
         setUserLocation,
+        isOnline,
+        setIsOnline,
       }}
     >
       {props.children}

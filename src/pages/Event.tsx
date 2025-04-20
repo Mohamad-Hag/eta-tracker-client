@@ -160,6 +160,7 @@ export default function Event() {
                 Leave <IconDoorExit />
               </button>
             </div>
+            <div className="px-4 text-gray-500 font-medium text-sm"># Joiners ({eventJoiners.length})</div>
             <div className="flex flex-col w-full items-center md:gap-2">
               {eventJoiners.map((joiner) => (
                 <EventJoiner key={joiner.guest.id} joiner={joiner} />

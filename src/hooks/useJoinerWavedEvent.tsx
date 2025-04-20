@@ -10,11 +10,11 @@ interface JoinerWavedEvent {
 }
 
 const useJoinerWavedEvent = () => {
-  const { socket } = useAppContext();
+  const { socket, isOnline } = useAppContext();
   const createWave = useCreateWave();
 
   useEffect(() => {
-    if (!socket) return;
+    if (!socket || !isOnline) return;
 
     const handleJoinerWaved = (data: JoinerWavedEvent) => {
       console.log(
@@ -29,7 +29,7 @@ const useJoinerWavedEvent = () => {
       console.log("Cleaning joinerWaved event");
       socket.off("joinerWaved", handleJoinerWaved); // Clean up on unmount
     };
-  }, [socket]);
+  }, [socket, isOnline]);
 };
 
 export default useJoinerWavedEvent;

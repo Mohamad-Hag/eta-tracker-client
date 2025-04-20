@@ -4,7 +4,7 @@ import { joinEvent } from "../services/events";
 import { useEffect } from "react";
 
 const useJoinEvent = (id?: string, start: boolean = false) => {
-  const { guest, socket } = useAppContext();
+  const { guest, socket, isOnline } = useAppContext();
 
   const join = async () => {
     try {
@@ -18,9 +18,9 @@ const useJoinEvent = (id?: string, start: boolean = false) => {
   };
 
   useEffect(() => {
-    if (!id || !guest || !socket || !socket.id || !start) return;
+    if (!id || !guest || !socket || !socket.id || !start || !isOnline) return;
     join();
-  }, [id, guest, socket, socket?.id, start]);
+  }, [id, guest, socket, socket?.id, start, isOnline]);
 };
 
 export default useJoinEvent;

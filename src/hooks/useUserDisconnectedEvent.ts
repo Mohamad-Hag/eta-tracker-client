@@ -9,11 +9,11 @@ interface UserDisconnectedEvent {
 }
 
 const useUserDisconnectedEvent = () => {
-  const { socket, guest } = useAppContext();
+  const { socket, guest, isOnline } = useAppContext();
   const { setEventJoiners, event } = useEventContext();
 
   useEffect(() => {
-    if (!socket || !event || !guest) return;
+    if (!socket || !event || !guest || !isOnline) return;
 
     const handleUserDisconnected = (data: UserDisconnectedEvent) => {
       console.log(
@@ -50,7 +50,7 @@ const useUserDisconnectedEvent = () => {
       console.log("Cleaning userDisconnected event");
       socket.off("userDisconnected", handleUserDisconnected); // Clean up on unmount
     };
-  }, [socket, event, setEventJoiners, guest]); // Only depend on socket and setEventJoiners
+  }, [socket, event, setEventJoiners, guest, isOnline]); // Only depend on socket and setEventJoiners
 };
 
 export default useUserDisconnectedEvent;
