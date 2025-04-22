@@ -122,6 +122,7 @@ export const AppProvider = (props: { children: React.ReactNode }) => {
   const handleOnline = () => {
     toast.success("Back online ✅");
     setIsOnline(true);
+    socket?.connect();
   };
 
   const handleVisibilityChange = (soc: Socket) => {
@@ -132,8 +133,26 @@ export const AppProvider = (props: { children: React.ReactNode }) => {
     }
   };
 
+  // Watchdog to ensure the socket is always connected
   useEffect(() => {
-    const soc = io(HOST);
+    const interval = setInterval(() => {
+      if (socket && !socket.connected && isOnline) {
+        console.log("Manually trying to reconnect...");
+        socket.connect();
+      }
+    }, 5000); // every 5 seconds
+
+    return () => clearInterval(interval);
+  }, [socket, isOnline]);
+
+  useEffect(() => {
+    const soc = io(HOST, {
+      transports: ["websocket"],
+      autoConnect: true,
+      reconnection: true,
+      reconnectionAttempts: 10,
+      reconnectionDelay: 2000,
+    });
     soc.on("connect", () => {
       console.log("Guest connected to server...");
     });
