@@ -53,6 +53,9 @@ export default function Event() {
   const noEventErrors = eventErrors.length === 0;
 
   const isLast = eventJoiners.length === 1;
+  const isCurrentGuestArrived =
+    eventJoiners.find((joiner) => joiner.guest.id === guest.id)?.status ===
+    "Arrived";
   const leaveConfirmMessage = `Are you sure you want to leave the event? ${
     isLast
       ? "This will automatically delete the event because you are the last one"
@@ -143,12 +146,17 @@ export default function Event() {
             <TransportModeSelector
               mode={transportMode}
               onChange={(m) => setTransportMode(m.value as TransportMode)}
-              readonly={isWatchStarted}
-              readonlyMessage="Stop location tracking to change mode."
+              readonly={isWatchStarted || isCurrentGuestArrived}
+              readonlyMessage={
+                isCurrentGuestArrived
+                  ? "You can't change transport mode since you arrived at the event."
+                  : "Stop location tracking to change transport mode."
+              }
             />
             <div className="flex items-center gap-2 border-b md:border-b-0 pb-6 w-full px-4">
               <button
                 className="button flex-1"
+                disabled={isCurrentGuestArrived}
                 onClick={
                   isWatchStarted ? stopWatch : () => startWatch(transportMode)
                 }
@@ -160,7 +168,9 @@ export default function Event() {
                 Leave <IconDoorExit />
               </button>
             </div>
-            <div className="px-4 text-gray-500 font-medium text-sm"># Joiners ({eventJoiners.length})</div>
+            <div className="px-4 text-gray-500 font-medium text-sm">
+              # Joiners ({eventJoiners.length})
+            </div>
             <div className="flex flex-col w-full items-center md:gap-2">
               {eventJoiners.map((joiner) => (
                 <EventJoiner key={joiner.guest.id} joiner={joiner} />

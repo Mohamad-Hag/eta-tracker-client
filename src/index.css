@@ -41,6 +41,10 @@
   width: 18px;
   height: 18px;
 }
+.button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
 .flying-animated {
   top: 50%;
   opacity: 100%;

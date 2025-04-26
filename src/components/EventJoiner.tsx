@@ -29,6 +29,7 @@ export default function EventJoiner({ joiner }: EventJoinerProps) {
   const waveEmoji =
     waveType === "love" ? "💖" : waveType === "wave" ? "👋" : "👋";
   const isOnline = joiner.connected;
+  const isArrived = joiner.status === "Arrived";
   const mode: TransportModeObject = transportModes.find((m) =>
     joiner.transport_mode
       ? m.value === joiner.transport_mode
@@ -56,7 +57,7 @@ export default function EventJoiner({ joiner }: EventJoinerProps) {
           <span className="truncate">
             {joiner.guest?.name} {isYou && "(You)"}
           </span>
-          {mode && (
+          {mode && joiner.status !== "Arrived" && (
             <span className="scale-75 text-gray-500 border border-gray-300 bg-gray-100 h-8 w-8 flex items-center justify-center rounded-lg">
               {mode.icon}
             </span>
@@ -64,9 +65,9 @@ export default function EventJoiner({ joiner }: EventJoinerProps) {
         </div>
         <div className="text-sm text-gray-500 flex items-center flex-wrap gap-1 mt-1">
           <div className="flex items-center gap-1">
-            {joiner.late?.isLate ? (
+            {joiner.late?.isLate && !isArrived ? (
               <IconClockX size={14} className="text-red-500" />
-            ) : joiner.early?.isEarly ? (
+            ) : joiner.early?.isEarly && !isArrived ? (
               <IconClockPin size={14} className="text-purple-500" />
             ) : (
               iconStatusMap[joiner.status as keyof typeof iconStatusMap] ?? (
@@ -75,7 +76,7 @@ export default function EventJoiner({ joiner }: EventJoinerProps) {
             )}
             <span>{joiner.status}</span>
           </div>
-          {(joiner.late?.isLate || joiner.early?.isEarly) && (
+          {(joiner.late?.isLate || joiner.early?.isEarly) && !isArrived && (
             <span className="text-[11px] font-light flex items-center gap-1">
               <IconCircleFilled size={5} />
               {joiner.late?.amount && joiner.late.isLate
@@ -94,7 +95,9 @@ export default function EventJoiner({ joiner }: EventJoinerProps) {
         <div className="text-xs bg-gray-100 text-gray-800 px-3 py-1 rounded-full flex items-center gap-1">
           <IconClock className="w-4 h-4" />
           <span>
-            {joiner.eta ? secondsToDurationString(joiner.eta) : "N/A"}
+            {joiner.eta && !isArrived
+              ? secondsToDurationString(joiner.eta)
+              : "N/A"}
           </span>
         </div>
       </div>

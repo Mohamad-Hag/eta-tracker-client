@@ -43,7 +43,8 @@ const useLoadEvent = (id?: string) => {
       const response = await getEventJoiners(id);
       setEventJoiners(response);
       setTransportMode(
-        response.find((j: any) => j.guest.id === guest.id)?.transport_mode
+        response.find((j: any) => j.guest.id === guest.id)?.transport_mode ??
+          "car"
       );
       if (response.error) setErrors("Failed to fetch event joiners");
     } catch (error) {

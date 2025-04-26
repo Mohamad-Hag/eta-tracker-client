@@ -43,7 +43,10 @@ const useUserJoinedEvent = () => {
           (joiner) => joiner.guest.id === data.guest.id
         );
         setTransportMode(existJoiner.transportMode || "car");
-        if (existJoiner.status !== "Not Started")
+        if (
+          existJoiner.status !== "Not Started" &&
+          existJoiner.status !== "Arrived"
+        )
           startWatch(existJoiner.transportMode);
         return prev.map((joiner) =>
           joiner.guest.id === data.guest.id
